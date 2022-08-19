@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+
+  react:
+    container_name: list_app_exp
+    image: node:14.17.0
+    build: ./
+    volumes:
+      - "./:/app"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    working_dir: /app
+    command: "npm start"
+    environment:
+      - DISPLAY=unix$DISPLAY
+    ports:
+      - "19000:19000"
