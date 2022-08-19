@@ -1,14 +1,17 @@
-import logo from "./logo.svg";
+import { Outlet } from "react-router-dom";
+import { NavBar } from './components/navbar';
 import "./App.css";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>Built using CRA electron-builder Template.</p>
-      </header>
-    </div>
-  );
+	return (
+		<div id="container" className="bg-white">
+			<NavBar/>
+
+			<main className="mt-24">
+			 	<Outlet/>
+			</main>
+		</div>
+	)
 }
 
 export default App;
