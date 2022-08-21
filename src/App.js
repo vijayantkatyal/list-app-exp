@@ -1,98 +1,74 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet } from "react-router-dom";
-// import { NavBar } from './components/navbar';
 import { Container, Header, Sidebar, Sidenav, Content, Navbar, Nav } from 'rsuite';
-import CogIcon from '@rsuite/icons/legacy/Cog';
-import AngleLeftIcon from '@rsuite/icons/legacy/AngleLeft';
-import AngleRightIcon from '@rsuite/icons/legacy/AngleRight';
-import GearCircleIcon from '@rsuite/icons/legacy/GearCircle';
-import DashboardIcon from '@rsuite/icons/Dashboard';
-import GroupIcon from '@rsuite/icons/legacy/Group';
-import MagicIcon from '@rsuite/icons/legacy/Magic';
+import ListIcon from '@rsuite/icons/List';
+import PlusIcon from '@rsuite/icons/Plus';
 
-import "./App.css";
+import { Link } from "react-router-dom";
 
 import 'rsuite/dist/rsuite.min.css';
+import "./App.css";
 
-
-const headerStyles = {
-	padding: 18,
-	fontSize: 16,
-	height: 56,
-	background: '#34c3ff',
-	color: ' #fff',
-	whiteSpace: 'nowrap',
-	overflow: 'hidden'
-};
-
-
-const NavToggle = ({ expand, onChange }) => {
-	return (
-		<Navbar appearance="subtle" className="nav-toggle">
-			<Nav>
-				<Nav.Menu
-					noCaret
-					placement="topStart"
-					trigger="click"
-					title={<CogIcon style={{ width: 20, height: 20 }} size="sm" />}
-				>
-					<Nav.Item>Help</Nav.Item>
-					<Nav.Item>Settings</Nav.Item>
-					<Nav.Item>Sign out</Nav.Item>
-				</Nav.Menu>
-			</Nav>
-
-			<Nav pullRight>
-				<Nav.Item onClick={onChange} style={{ width: 56, textAlign: 'center' }}>
-					{expand ? <AngleLeftIcon /> : <AngleRightIcon />}
-				</Nav.Item>
-			</Nav>
-		</Navbar>
-	);
-};
+function classNames(...classes) {
+    return classes.filter(Boolean).join(' ')
+}
 
 function App() {
-	const [expand, setExpand] = useState(true);
+	const [lists, setLists] = useState([
+		{
+			id: 1,
+			name: "List A",
+			uniqueid: "mz34928"
+		},
+		{
+			id: 2,
+			name: "List B",
+			uniqueid: "mz34928"
+		}
+	]);
+	const [activeKey, setActiveKey] = useState(null);
 
 	return (
-		// <div id="container" className="bg-white">
-		// 	<NavBar/>
-
-		// 	<main className="mt-24">
-		// 	 	<Outlet/>
-		// 	</main>
-		// </div>
-
-		<div className="show-fake-browser sidebar-page">
-			<Container>
-				<Sidebar
-					style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', alignSelf: 'flex-start' }}
-					width={expand ? 260 : 56}
-					// collapsible
-				>
-					<Sidenav expanded={expand} defaultOpenKeys={['3']} appearance="default">
-						<Sidenav.Header>
-							<div style={headerStyles}>Custom Sidenav</div>
-						</Sidenav.Header>
-						<Sidenav.Body>
-							<Nav>
-								<Nav.Item eventKey="1" active icon={<DashboardIcon />}>
-									Dashboard
+		<Container style={{ height: '100vh' }}>
+			<Sidebar
+				style={{ background: '#f7f7fa', display: 'flex', flexDirection: 'column' }}
+				width={260}
+				className="sidebarContainer"
+			>
+				<Sidenav expanded={true} defaultOpenKeys={['3']} appearance="subtle">
+					<Sidenav.Body>
+						<Nav activeKey={activeKey} onSelect={setActiveKey}>
+							{lists.map((list, index) => (
+								<Nav.Item
+									eventKey={list.id} icon={<ListIcon />}
+									key={index}
+									className={
+										classNames(
+											activeKey == list.id ? 'active': null,
+											'nav-item'
+										)
+									}
+								>
+									<Link to={"/list/"+list.id}>
+										{list.name}
+									</Link>
 								</Nav.Item>
-								<Nav.Item eventKey="2" icon={<GroupIcon />}>
-									User Group
-								</Nav.Item>
-							</Nav>
-						</Sidenav.Body>
-					</Sidenav>
-				</Sidebar>
+							))}
+							{lists.length > 0 ?
+							<Nav.Item divider style={{ borderTop: '1px solid #ddd' }} /> : null }
+							<Nav.Item eventKey="add" icon={<PlusIcon />} href="/list/1">
+								Add
+							</Nav.Item>
+						</Nav>
+					</Sidenav.Body>
+				</Sidenav>
+			</Sidebar>
 
-				<Container>
-					<Outlet />
-				</Container>
-
+			<Container className="mainContainer">
+				<Outlet />
 			</Container>
-		</div>
+
+		</Container>
 	)
 }
 

@@ -16,12 +16,16 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: false,
+      nodeIntegration: true,
       contextIsolation: true,
       enableRemoteModule: false,
+	  devTools: false,
       preload: path.join(__dirname, "preload.js"),
     },
   });
+
+  mainWindow.setMenuBarVisibility(false);
+  // mainWindow.webContents.openDevTools();
 
   // Load from localhost if in development
   // Otherwise load index.html file

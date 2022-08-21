@@ -1,8 +1,8 @@
 [Done] App Setup (Docker, Electron, React)
 [Done] Navigation
-> Layout
+[Done] Layout
 > Views
 > Database Embed
 
-> hide menu
-> disable dev tools
+[Done] hide menu
+[Done] disable dev tools
