@@ -11,6 +11,21 @@ if (isDev) {
   REACT_DEVELOPER_TOOLS = devTools.REACT_DEVELOPER_TOOLS;
 }
 
+
+// const knex = require('knex')({
+// 	client: 'better-sqlite3',
+// 	connection: {
+// 	  filename: "./mydb.sqlite"
+// 	},
+// 	useNullAsDefault: true
+// });
+
+// knex.schema.createTable('users', function (table) {
+// 	table.increments();
+// 	table.string('name');
+// 	table.timestamps();
+// });
+
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,

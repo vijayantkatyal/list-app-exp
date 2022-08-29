@@ -3,11 +3,15 @@ import { Outlet } from "react-router-dom";
 import { Container, Header, Sidebar, Sidenav, Content, Navbar, Nav } from 'rsuite';
 import ListIcon from '@rsuite/icons/List';
 import PlusIcon from '@rsuite/icons/Plus';
+import TableIcon from '@rsuite/icons/Table';
+import PageIcon from '@rsuite/icons/Page';
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import 'rsuite/dist/rsuite.min.css';
 import "./App.css";
+
+// import database from './database';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -24,9 +28,16 @@ function App() {
 			id: 2,
 			name: "List B",
 			uniqueid: "mz34928"
+		},
+		{
+			id: 3,
+			name: "List C",
+			uniqueid: "mzasda34928"
 		}
 	]);
+
 	const [activeKey, setActiveKey] = useState(null);
+	const navigate = useNavigate();
 
 	return (
 		<Container style={{ height: '100vh' }}>
@@ -40,7 +51,7 @@ function App() {
 						<Nav activeKey={activeKey} onSelect={setActiveKey}>
 							{lists.map((list, index) => (
 								<Nav.Item
-									eventKey={list.id} icon={<ListIcon />}
+									eventKey={list.id} icon={<TableIcon />}
 									key={index}
 									className={
 										classNames(
@@ -48,10 +59,10 @@ function App() {
 											'nav-item'
 										)
 									}
-								>
-									<Link to={"/list/"+list.id}>
+									style={{ paddingLeft: '45px' }}
+									onClick={() => navigate("/list/"+list.id)}
+								>									
 										{list.name}
-									</Link>
 								</Nav.Item>
 							))}
 							{lists.length > 0 ?
