@@ -8,7 +8,8 @@ const database = require('knex')({
 	connection: {
 	  filename: "./mydb.sqlite"
 	},
-	useNullAsDefault: true
+	useNullAsDefault: true,
+	debug: false
 });
 
 export default database;

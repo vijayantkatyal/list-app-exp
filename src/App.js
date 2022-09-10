@@ -76,7 +76,7 @@ function App() {
 			</Sidebar>
 
 			<Container className="mainContainer">
-				<Outlet />
+				{activeKey != null ? <Outlet /> : "Welcome" }
 			</Container>
 
 		</Container>

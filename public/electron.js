@@ -2,6 +2,8 @@ const { app, BrowserWindow } = require("electron");
 const isDev = require("electron-is-dev");
 const path = require("path");
 
+// const database = require("./../src/database");
+
 // Conditionally include the dev tools installer to load React Dev Tools
 let installExtension, REACT_DEVELOPER_TOOLS;
 
@@ -10,21 +12,6 @@ if (isDev) {
   installExtension = devTools.default;
   REACT_DEVELOPER_TOOLS = devTools.REACT_DEVELOPER_TOOLS;
 }
-
-
-// const knex = require('knex')({
-// 	client: 'better-sqlite3',
-// 	connection: {
-// 	  filename: "./mydb.sqlite"
-// 	},
-// 	useNullAsDefault: true
-// });
-
-// knex.schema.createTable('users', function (table) {
-// 	table.increments();
-// 	table.string('name');
-// 	table.timestamps();
-// });
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -86,6 +73,22 @@ app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+app.on("ready", function(){
+
+	const database = require('knex')({
+		client: 'better-sqlite3', // or 'better-sqlite3'
+		connection: {
+			filename: "./public/mydb.sqlite"
+		},
+		useNullAsDefault: true,
+		debug: false
+	});
+
+	var _data = database('books').select().then(function(data){
+		console.log(data);
+	});
 });
 
 // The code above has been adapted from a starter example in the Electron docs:
