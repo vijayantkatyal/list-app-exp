@@ -18,6 +18,9 @@ function classNames(...classes) {
 }
 
 function App() {
+
+	const { ipcRenderer } = window;
+
 	const [lists, setLists] = useState([
 		{
 			id: 1,
@@ -36,8 +39,15 @@ function App() {
 		}
 	]);
 
+	const [books, setBooks] = useState([]);
+
 	const [activeKey, setActiveKey] = useState(null);
 	const navigate = useNavigate();
+
+	async function test_one() {
+		var _res = await ipcRenderer.sendSync('message',"hi everyone");
+		setBooks(_res);
+	}
 
 	return (
 		<Container style={{ height: '100vh' }}>
@@ -74,6 +84,12 @@ function App() {
 					</Sidenav.Body>
 				</Sidenav>
 			</Sidebar>
+
+			<button type="button" onClick={test_one}>Test 1</button>
+
+			{books.map((item, index) => (
+				<li>{item.id} : {item.value}</li>
+			))}
 
 			<Container className="mainContainer">
 				{activeKey != null ? <Outlet /> : "Welcome" }

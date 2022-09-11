@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const isDev = require("electron-is-dev");
 const path = require("path");
 
@@ -85,10 +85,23 @@ app.on("ready", function(){
 		useNullAsDefault: true,
 		debug: false
 	});
+});
 
-	var _data = database('books').select().then(function(data){
-		console.log(data);
-	});
+const database = require('knex')({
+	client: 'better-sqlite3', // or 'better-sqlite3'
+	connection: {
+		filename: "./public/mydb.sqlite"
+	},
+	useNullAsDefault: true,
+	debug: false
+});
+
+
+ipcMain.on("message", (event, data) => {
+	// console.log(data);
+	var _data = database('books').select().then(function(db_data){
+		event.returnValue = db_data;
+	});	
 });
 
 // The code above has been adapted from a starter example in the Electron docs:
