@@ -75,18 +75,6 @@ app.on("activate", () => {
   }
 });
 
-app.on("ready", function(){
-
-	const database = require('knex')({
-		client: 'better-sqlite3', // or 'better-sqlite3'
-		connection: {
-			filename: "./public/mydb.sqlite"
-		},
-		useNullAsDefault: true,
-		debug: false
-	});
-});
-
 const database = require('knex')({
 	client: 'better-sqlite3', // or 'better-sqlite3'
 	connection: {
@@ -96,12 +84,49 @@ const database = require('knex')({
 	debug: false
 });
 
+app.on("ready", function(){
+
+	// const database = require('knex')({
+	// 	client: 'better-sqlite3', // or 'better-sqlite3'
+	// 	connection: {
+	// 		filename: "./public/mydb.sqlite"
+	// 	},
+	// 	useNullAsDefault: true,
+	// 	debug: false
+	// });
+	
+	// get tables
+	database('sqlite_master').where({type: 'table'}).whereNot('name', 'sqlite_sequence').select('name').then(function(data){
+		console.log('--------------------------------');
+		console.log(data);
+		console.log('--------------------------------');
+	});
+
+});
+
+
+
 
 ipcMain.on("message", (event, data) => {
+
 	// console.log(data);
-	var _data = database('books').select().then(function(db_data){
-		event.returnValue = db_data;
-	});	
+
+	// get all tables
+	if(data.query == "get_all_tables")
+	{
+		database('sqlite_master').where({type: 'table'}).whereNot('name', 'sqlite_sequence').select('name').then(function(res){
+			event.returnValue = res;	
+		});
+	}
+	
+
+	// get specific table data
+	if(data.query == "get_table_data")
+	{
+		database(data.table_name).select().then(function(res){
+			event.returnValue = res;
+		});	
+	}
 });
 
 // The code above has been adapted from a starter example in the Electron docs:
