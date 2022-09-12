@@ -62,7 +62,7 @@ function App() {
 			dynamicTyping: true,
 			skipEmptyLines: true,
 			complete: function(results) {
-				// console.log(results);
+				console.log(results);
 				// alert(results.meta.fields);
 				setFileData(results.meta.fields);
 

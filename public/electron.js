@@ -4,6 +4,8 @@ const path = require("path");
 
 // const database = require("./../src/database");
 
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
 // Conditionally include the dev tools installer to load React Dev Tools
 let installExtension, REACT_DEVELOPER_TOOLS;
 
@@ -21,13 +23,13 @@ function createWindow() {
       nodeIntegration: true,
       contextIsolation: true,
       enableRemoteModule: false,
-	  devTools: false,
+	  devTools: true,
+	  sandbox: false,
       preload: path.join(__dirname, "preload.js"),
     },
   });
 
-  mainWindow.setMenuBarVisibility(false);
-  // mainWindow.webContents.openDevTools();
+  mainWindow.setMenuBarVisibility(true);
 
   // Load from localhost if in development
   // Otherwise load index.html file
@@ -39,7 +41,7 @@ function createWindow() {
 
   // Open DevTools if in dev mode
   if (isDev) {
-    mainWindow.webContents.openDevTools({ mode: "detach" });
+    mainWindow.webContents.openDevTools();
   }
 }
 
@@ -48,9 +50,9 @@ function createWindow() {
 // Install REACT_DEVELOPER_TOOLS as well if isDev
 app.whenReady().then(() => {
   if (isDev) {
-    installExtension(REACT_DEVELOPER_TOOLS)
-      .then((name) => console.log(`Added Extension:  ${name}`))
-      .catch((error) => console.log(`An error occurred: , ${error}`));
+    // installExtension(REACT_DEVELOPER_TOOLS , { loadExtensionOptions: { allowFileAccess: true } })
+    //   .then((name) => console.log(`Added Extension:  ${name}`))
+    //   .catch((error) => console.log(`An error occurred: , ${error}`));
   }
 
   createWindow();

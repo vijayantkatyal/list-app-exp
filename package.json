@@ -18,6 +18,10 @@
     "rsuite": "^5.16.6",
     "web-vitals": "^1.1.2"
   },
+  "author": {
+	"name": "test",
+	"email": "test@ww.com"
+  },
   "scripts": {
     "start": "concurrently -k \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electronmon . --no-sandbox --enable-logging\"",
     "build": "react-scripts build",
@@ -27,7 +31,9 @@
     "dist:mac": "npm run build && electron-builder -m -c.extraMetadata.main=build/electron.js",
     "dist:linux": "npm run build && electron-builder -l -c.extraMetadata.main=build/electron.js",
     "react-start": "react-scripts start",
-    "db": "node db.js"
+    "db": "node db.js",
+	"electron": "concurrently -k \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron . --no-sandbox --enable-logging\"",
+	"rebuild": "electron-rebuild"
   },
   "eslintConfig": {
     "extends": [
