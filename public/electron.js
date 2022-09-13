@@ -120,6 +120,29 @@ ipcMain.on("message", (event, data) => {
 			event.returnValue = res;	
 		});
 	}
+
+	if(data.query == "insert_new_table")
+	{
+		// create new table
+		database.schema.createTable(data.table_name, t => {
+			t.increments('id').primary();
+			data.columns.forEach(name => {
+				t.string(name, 100);
+			});
+		}).then(function(res) {
+
+			// database(data.table_name).insert(data.data).then(function(){
+			// 	event.returnValue = "data created";
+			// });
+
+			database.batchInsert(data.table_name, data.data, 500).then(function(){
+				event.returnValue = "data_created";
+			});
+
+		});
+		// create new columns
+		// insert data
+	}
 	
 
 	// get specific table data

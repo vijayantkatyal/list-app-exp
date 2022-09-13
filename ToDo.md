@@ -10,10 +10,7 @@
 
 [ToDo]
 
-- add list
--- file upload
--- select column, which to import
--- add new table and add bulk data
+[Done] add list (file upload, select column, which to import, add new table and add bulk data)
 
 - show lists and specific list data
 

@@ -10,6 +10,7 @@
     "cross-env": "^7.0.3",
     "electron-is-dev": "^1.2.0",
     "knex": "^2.2.0",
+    "lodash": "^4.17.21",
     "papaparse": "^5.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -19,8 +20,8 @@
     "web-vitals": "^1.1.2"
   },
   "author": {
-	"name": "test",
-	"email": "test@ww.com"
+    "name": "test",
+    "email": "test@ww.com"
   },
   "scripts": {
     "start": "concurrently -k \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electronmon . --no-sandbox --enable-logging\"",
@@ -32,8 +33,8 @@
     "dist:linux": "npm run build && electron-builder -l -c.extraMetadata.main=build/electron.js",
     "react-start": "react-scripts start",
     "db": "node db.js",
-	"electron": "concurrently -k \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron . --no-sandbox --enable-logging\"",
-	"rebuild": "electron-rebuild"
+    "electron": "concurrently -k \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron . --no-sandbox --enable-logging\"",
+    "rebuild": "electron-rebuild"
   },
   "eslintConfig": {
     "extends": [
