@@ -9,6 +9,8 @@ export default function CategoryPage() {
 
 	const { ipcRenderer } = window;
 
+	const [sortColumn, setSortColumn] = useState();
+	const [sortType, setSortType] = useState();
 	const [loading, setLoading] = useState(true);
 
 	const [columns, setColumns] = useState([]);
@@ -27,6 +29,15 @@ export default function CategoryPage() {
 		const end = start + limit;
 		return i >= start && i < end;
 	});
+
+	const handleSortColumn = (sortColumn, sortType) => {
+		setLoading(true);
+		setTimeout(() => {
+			setLoading(false);
+			setSortColumn(sortColumn);
+			setSortType(sortType);
+		}, 500);
+	};
 
 
 	// const data = defaultData.filter((v, i) => {
@@ -50,7 +61,7 @@ export default function CategoryPage() {
 		setColumns(_res_array);
 	}
 
-	async function getData() {
+	async function fetchData() {
 		console.log("loading data");
 		var _req = {
 			"query": "get_table_data",
@@ -64,19 +75,51 @@ export default function CategoryPage() {
 		setLoading(false);
 	}
 
+	const getData = () => {
+		if (sortColumn && sortType) {
+			var _dd = data.sort((a, b) => {
+				let x = a[sortColumn];
+				let y = b[sortColumn];
+				if (typeof x === 'string') {
+					x = x.charCodeAt();
+				}
+				if (typeof y === 'string') {
+					y = y.charCodeAt();
+				}
+				if (sortType === 'asc') {
+					return x - y;
+				} else {
+					return y - x;
+				}
+			});
+
+			return _dd.filter((v, i) => {
+				const start = limit * (page - 1);
+				const end = start + limit;
+				return i >= start && i < end;
+			});
+		}
+		return data.filter((v, i) => {
+			const start = limit * (page - 1);
+			const end = start + limit;
+			return i >= start && i < end;
+		});
+	};
+
+
 	useEffect(() => {
 		getColumns();
-		getData();
-	},[id]);
+		fetchData();
+	}, [id]);
 
 	return (
 		<div>
 			<h3>{id}</h3>
-			<hr/>
+			<hr />
 			<div style={{ height: "calc(100vh - 170px)" }}>
-				<Table data={pageData} autoHeight={false} fillHeight={true} virtualized loading={loading}>
+				<Table data={getData()} autoHeight={false} fillHeight={true} virtualized loading={loading} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn}>
 					{columns?.map((column, index) => (
-						<Column width={column[0] == "email" || column[0] == "Email" ? 350 : 100}  flexGrow={column[0] == "email" || column[0] == "Email" ? 2 : 1}>
+						<Column width={column[0] == "email" || column[0] == "Email" ? 350 : 100} flexGrow={column[0] == "email" || column[0] == "Email" ? 2 : 1} sortable>
 							<HeaderCell>{column[0]}</HeaderCell>
 							<Cell dataKey={column[0]} />
 						</Column>

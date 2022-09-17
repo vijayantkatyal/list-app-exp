@@ -14,7 +14,11 @@
 
 [Done] show lists and specific list data
 
-- filter lists (search, order, datatable, export)
+[Done] sort table by column
+
+- search
+
+- export
 
 - merge two lists together
 
