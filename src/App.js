@@ -5,6 +5,8 @@ import ListIcon from '@rsuite/icons/List';
 import PlusIcon from '@rsuite/icons/Plus';
 import TableIcon from '@rsuite/icons/Table';
 import PageIcon from '@rsuite/icons/Page';
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -171,7 +173,8 @@ function App() {
 				<Sidenav expanded={true} defaultOpenKeys={['3']} appearance="subtle">
 					<Sidenav.Body>
 						<Nav activeKey={activeKey} onSelect={setActiveKey}>
-							{lists.map((list, index) => (
+							<SimpleBar style={{ maxHeight: 'cal(100vh - 170px)' }}>
+							{lists?.map((list, index) => (
 								<Nav.Item
 									eventKey={list.name} icon={<TableIcon />}
 									key={index}
@@ -181,12 +184,12 @@ function App() {
 											'nav-item'
 										)
 									}
-									style={{ paddingLeft: '45px' }}
 									onClick={() => navigate("/list/" + list.name)}
 								>
 									{list.name}
 								</Nav.Item>
 							))}
+							</SimpleBar>
 							{lists.length > 0 ?
 								<Nav.Item divider style={{ borderTop: '1px solid #ddd' }} /> : null}
 							<Nav.Item eventKey="add_new" icon={<PlusIcon />}>

@@ -144,6 +144,13 @@ ipcMain.on("message", (event, data) => {
 		// insert data
 	}
 	
+	// get specific table columns
+	if(data.query == "get_table_schema")
+	{
+		database(data.table_name).columnInfo().then(function(res){
+			event.returnValue = res;
+		});	
+	}
 
 	// get specific table data
 	if(data.query == "get_table_data")

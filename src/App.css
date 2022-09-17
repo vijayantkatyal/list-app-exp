@@ -2,6 +2,14 @@
 	padding: 5px;
 }
 
+[data-simplebar] {
+	height: calc(100vh - 70px) !important;
+}
+
+.sidebarContainer .nav-item:hover, .sidebarContainer .nav-item svg{
+	margin-right: 5px;
+}
+
 .sidebarContainer .nav-item:hover, .sidebarContainer .nav-item:hover a {
 	color: red;
 }

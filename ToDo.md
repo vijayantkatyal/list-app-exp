@@ -12,7 +12,7 @@
 
 [Done] add list (file upload, select column, which to import, add new table and add bulk data)
 
-- show lists and specific list data
+[Done] show lists and specific list data
 
 - filter lists (search, order, datatable, export)
 
