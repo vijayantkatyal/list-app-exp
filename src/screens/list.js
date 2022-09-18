@@ -98,9 +98,15 @@ export default function CategoryPage() {
 
 		if(filterText != null && filterColumn != null)
 		{
-			var _dd = _dd.filter(function(item){
-				return item[filterColumn].includes(filterText);
-			});
+			if(_dd.length > 0)
+			{
+				var _dd = _dd.filter(function(item){
+					if(item && item[filterColumn])
+					{
+						return item[filterColumn].includes(filterText);
+					}
+				});
+			}
 		}
 
 		return _dd.filter((v, i) => {
@@ -113,15 +119,20 @@ export default function CategoryPage() {
 	useEffect(() => {
 		if(filterText != null && filterColumn != null)
 		{
-			var _dd = data;
-			var _dd = _dd.filter(function(item){
-				return item[filterColumn].includes(filterText);
-			});
+			if(data.length > 0)
+			{
+				var _dd = data;
+				var _dd = _dd.filter(function(item){
+					if(item && item[filterColumn])
+					{
+						return item[filterColumn].includes(filterText);
+					}
+				});
 
-			setTotalLength(_dd.length);
+				setTotalLength(_dd.length);
+			}
 		}
 	}, [filterText]);
-
 
 	useEffect(() => {
 
