@@ -16,10 +16,10 @@
 
 [Done] sort table by column
 
-- search
+[Done] search
 
 - export
 
 - merge two lists together
 
-- run sql on table
+- run sql queries on table
