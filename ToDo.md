@@ -18,8 +18,23 @@
 
 [Done] search
 
-- export
+- export (excel, csv)
+- rename
+- delete
+- clear
+- delete row
 
-- merge two lists together
+- remove duplicates from single list (keep oringal, craete two: without duplicate, and duplicate removed data)
+- remove emails / rows based on filter text e.g. junk word in email, @ missing
+- remove if emails missing
 
-- run sql queries on table
+- repair domains (email)
+
+- split list by count (e.g. 1000), domain (e.g. gmail)
+
+- union / merge two or more lists together into new list
+- subtract list from another list(s) (create new list)
+- unique / commong from list(s) (create new list)
+
+[Bug]
+[Fixed] map columns to first name, last name and email (to avoid mapping during ops) (means fixed columns, instead of dynamic)

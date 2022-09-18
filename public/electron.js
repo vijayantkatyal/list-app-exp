@@ -29,7 +29,7 @@ function createWindow() {
     },
   });
 
-  mainWindow.setMenuBarVisibility(true);
+  mainWindow.setMenuBarVisibility(false);
 
   // Load from localhost if in development
   // Otherwise load index.html file

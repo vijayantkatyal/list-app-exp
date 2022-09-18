@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from "react-router-dom";
-import { Container, Header, Sidebar, Sidenav, Content, Navbar, Nav, Button, Uploader, Modal, Input, Form, Checkbox, CheckboxGroup, Schema } from 'rsuite';
+import { Container, Header, Sidebar, Sidenav, Content, Navbar, Nav, Button, Uploader, Modal, Input, Form, Checkbox, CheckboxGroup, Schema, SelectPicker } from 'rsuite';
 import ListIcon from '@rsuite/icons/List';
 import PlusIcon from '@rsuite/icons/Plus';
 import TableIcon from '@rsuite/icons/Table';
@@ -79,9 +79,9 @@ function App() {
 
 		// console.log(files[0].blobFile);
 
-		setNewFile(files[0].blobFile);
+		setNewFile(files[files.length - 1].blobFile);
 
-		Papa.parse(files[0].blobFile, {
+		Papa.parse(files[files.length - 1].blobFile, {
 			header: true,
 			dynamicTyping: true,
 			skipEmptyLines: true,
@@ -102,6 +102,11 @@ function App() {
 		});
 	}
 
+	const columnDataList = newColumnData?.map(item =>({
+		label: item,
+		value: item
+	}));
+
 	async function handleFormSubmit() {
 
 		var _err = "";
@@ -110,17 +115,17 @@ function App() {
 			_err = "List name cannot be empty.";
 		}
 
-		if(formValue.checkbox.length == 0)
+		if(formValue.email_column == null || formValue.email_column == "")
 		{
-			_err += " Select atleast one column for import";
+			_err += " Select email column for import";
 		}
 
 		setFormErrorMsg(_err);
 
-		if(formValue.list_name != null && formValue.list_name != "" && formValue.checkbox.length > 0)
+		if(formValue.list_name != null && formValue.list_name != "" && formValue.email_column != null && formValue.email_column != "")
 		{
 			// alert("saving to database");
-			// console.log(formValue.checkbox);
+			console.log(formValue);
 
 			
 			Papa.parse(newFile, {
@@ -130,15 +135,32 @@ function App() {
 				complete: async function (results) {
 					// console.log(results.data);
 
-					var _new_array = _.map(results.data, (el => _.pick(el, formValue.checkbox)));
-					console.log(_new_array);
+					var _selected_columns_array = [
+						formValue.first_name_column,
+						formValue.last_name_column,
+						formValue.email_column
+					];
+
+					// var _new_array = _.map(results.data, (el => _.pick(el, _selected_columns_array)));
+					// console.log(_new_array);
+
+					var _new_array = _.map(results.data, (el) => {
+						return {
+							first_name: formValue.first_name_column ? el[formValue.first_name_column] : null,
+							last_name: formValue.last_name_column ? el[formValue.last_name_column] : null,
+							email: el[formValue.email_column]
+						}
+					});
+
+					// console.log(_new_array);
 
 					var _req = {
 						"query": "insert_new_table",
 						"table_name": formValue.list_name,
-						"columns": formValue.checkbox,
+						"columns": ["first_name", "last_name", "email"],
 						"data": _new_array
 					};
+
 					var _res = await ipcRenderer.sendSync('message', _req);
 
 					if(_res == "data_created")
@@ -220,20 +242,27 @@ function App() {
 				</Modal.Header>
 				<Modal.Body>
 					
-					<Form formValue={formValue} onChange={formValue => setFormValue(formValue)}>
-						<Form.Group controlId="checkbox">
-          					<Form.ControlLabel>Select Columns to Import:</Form.ControlLabel>
-          					<Form.Control name="checkbox" accepter={CheckboxGroup} inline>
-								{newColumnData?.map((column, index) => (
-									<Checkbox value={column} checked>{column}</Checkbox>
-								))}
-								 </Form.Control>
-        				</Form.Group>
+					<Form fluid formValue={formValue} onChange={formValue => setFormValue(formValue)}>
 
 						<Form.Group controlId="list_name">
 							<Form.ControlLabel>New List Name</Form.ControlLabel>
 							<Form.Control name="list_name" required/>
 						</Form.Group>
+
+						<Form.Group controlId="first_name_column">
+              				<Form.ControlLabel>Select First Name Column</Form.ControlLabel>
+              				<Form.Control name="first_name_column" data={columnDataList} accepter={SelectPicker} />
+            			</Form.Group>
+
+						<Form.Group controlId="last_name_column">
+              				<Form.ControlLabel>Select Last Name Column</Form.ControlLabel>
+              				<Form.Control name="last_name_column" data={columnDataList} accepter={SelectPicker} />
+            			</Form.Group>
+
+						<Form.Group controlId="email_column">
+              				<Form.ControlLabel>Select Email Column</Form.ControlLabel>
+              				<Form.Control name="email_column" data={columnDataList} accepter={SelectPicker} />
+            			</Form.Group>
 					</Form>
 
 					<br/>
