@@ -24,7 +24,7 @@
 [Done] delete list
 
 [Done] remove duplicates from single list (keep oringal, craete two: without duplicate, and duplicate removed data)
-[⚡] remove emails / rows based on filter text e.g. junk word in email, @ missing
+[Done] remove emails / rows based on filter text e.g. junk word in email, @ missing
 [Done] remove if emails missing
 
 [⚡] union / merge two or more lists together into new list

@@ -219,6 +219,34 @@ ipcMain.on("message", (event, data) => {
 		});	
 	}
 
+	// remove emails based on filter
+	if(data.query == "filter_email_from_table")
+	{
+		var words = data.words;
+		var words_array = words.split(" ");
+
+		// database(data.table_name).whereRaw("email NOT LIKE '%@%'").orWhereRaw("email LIKE '%Nelle%'").select().then(function(res){
+		// 	event.returnValue = res;
+		// });
+
+		// database(data.table_name).whereRaw("email NOT LIKE '%@%'").orWhereRaw("email REGEXP_LIKE '"+ words_array +"'").select().then(function(res){
+		// 	event.returnValue = res;
+		// });
+
+		var sql = '';
+
+		words_array.forEach((word, index) => {
+			var _q = "OR email LIKE '%"+word+"%' ";
+			sql += _q;
+		});
+
+		database.raw("DELETE FROM abc WHERE email NOT LIKE '%@%' " + sql).then(function(res){
+			event.returnValue = "done";
+		});
+
+		
+	}
+
 	// delete specific table data
 	if(data.query == "delete_table")
 	{

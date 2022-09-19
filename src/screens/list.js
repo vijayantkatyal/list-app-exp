@@ -33,6 +33,11 @@ export default function CategoryPage() {
   	const handleOpenRM = () => setOpenRM(true);
   	const handleCloseRM = () => setOpenRM(false);
 
+	  const [rdeInput, setRdeInput] = useState(null);
+	  const [openRDE, setOpenRDE] = useState(false);
+		const handleOpenRDE = () => setOpenRDE(true);
+		const handleCloseRDE = () => setOpenRDE(false);
+
 	const handleChangeLimit = dataKey => {
 		setPage(1);
 		setLimit(dataKey);
@@ -232,6 +237,30 @@ export default function CategoryPage() {
 		// alert(_res);
 	}
 
+	function removeEmailsFilter() {
+		handleOpenRDE();
+	}
+
+	async function handleSubmitRDE() {
+		
+		if(rdeInput != null && rdeInput != "")
+		{
+			var _req = {
+				"query": "filter_email_from_table",
+				"table_name": id,
+				"words": rdeInput
+			};
+			var _res = await ipcRenderer.sendSync('message', _req);
+			console.log(_res);
+
+			setRdeInput(null);
+		}
+		else
+		{
+			alert("please enter words");
+		}
+	}
+
 	async function removeMissingEmail() {
 		var _req = {
 			"query": "remove_missing_email_from_table",
@@ -261,7 +290,7 @@ export default function CategoryPage() {
 								<Dropdown.Menu title="Repair">
 									<Dropdown.Item>Emails (Domain)</Dropdown.Item>
 									<Dropdown.Item onSelect={removeDuplicates}>Remove Duplicates</Dropdown.Item>
-									<Dropdown.Item>Remove Emails (Filter)</Dropdown.Item>
+									<Dropdown.Item onSelect={removeEmailsFilter}>Remove Emails (Filter)</Dropdown.Item>
 									<Dropdown.Item onSelect={removeMissingEmail}>Remove Null Data</Dropdown.Item>
 								</Dropdown.Menu>
 								<Dropdown.Menu title="Actions">
@@ -327,6 +356,27 @@ export default function CategoryPage() {
 						Ok
 					</Button>
 					<Button onClick={handleCloseRM} appearance="subtle">
+						Cancel
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Modal open={openRDE} onClose={handleCloseRDE} backdrop="static">
+				<Modal.Header>
+					<Modal.Title>Filter Emails</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Input placeholder="junk demo" value={rdeInput} onChange={setRdeInput} />
+					list of words to filter
+					<br/>
+					<br/>
+					will also remove emails missing @
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={handleSubmitRDE} appearance="primary">
+						Ok
+					</Button>
+					<Button onClick={handleCloseRDE} appearance="subtle">
 						Cancel
 					</Button>
 				</Modal.Footer>
