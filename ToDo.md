@@ -18,7 +18,7 @@
 
 [Done] search
 
-- export (excel, csv)
+[Done] export (csv)
 - rename
 - delete
 - clear

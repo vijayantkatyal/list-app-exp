@@ -1,7 +1,10 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Table, Pagination, FlexboxGrid, Input, SelectPicker } from 'rsuite';
+import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton } from 'rsuite';
 import { useParams, Link } from "react-router-dom";
 import { filter } from 'lodash';
+import GearIcon from '@rsuite/icons/Gear';
+import * as Papa from "papaparse";
+
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -145,12 +148,68 @@ export default function CategoryPage() {
 		fetchData();
 	}, [id]);
 
+	function exportList() {
+
+		// console.log(columnsData);
+
+		let csv = Papa.unparse({
+			data: data
+		});
+
+		// console.log(csv);
+
+		if (csv == null) return;
+
+		var blob = new Blob([csv]);
+		if (window.navigator.msSaveOrOpenBlob)  // IE hack; see http://msdn.microsoft.com/en-us/library/ie/hh779016.aspx
+			window.navigator.msSaveBlob(blob, id + ".csv");
+		else
+		{
+			var a = window.document.createElement("a");
+			a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+			a.download = id + ".csv";
+			document.body.appendChild(a);
+			a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
+			document.body.removeChild(a);
+		}
+	}
+
+	const renderIconButton = (props, ref) => {
+		return (
+		  <IconButton {...props} ref={ref} icon={<GearIcon />} circle color="red" appearance="ghost" style={{ marginLeft: '10px' }}/>
+		);
+	  };
+
 	return (
 		<div>
 			<div className="show-grid">
 				<FlexboxGrid justify="space-between">
 					<FlexboxGrid.Item colspan={12}>
-						<h3>{id}</h3>
+						<h3>
+							{id}
+							<Dropdown renderToggle={renderIconButton}>
+								<Dropdown.Item>Clear</Dropdown.Item>
+								<Dropdown.Item onSelect={exportList}>Export (CSV)</Dropdown.Item>
+								<Dropdown.Item divider />
+								<Dropdown.Menu title="Repair">
+									<Dropdown.Item>Emails (Domain)</Dropdown.Item>
+									<Dropdown.Item>Remove Duplicates</Dropdown.Item>
+									<Dropdown.Item>Remove Emails (Filter)</Dropdown.Item>
+									<Dropdown.Item>Remove Null Data</Dropdown.Item>
+								</Dropdown.Menu>
+								<Dropdown.Menu title="Actions">
+									<Dropdown.Item>Merge</Dropdown.Item>
+									<Dropdown.Item>Subtract</Dropdown.Item>
+									<Dropdown.Item>Unique</Dropdown.Item>
+								</Dropdown.Menu>
+								<Dropdown.Menu title="Split">
+									<Dropdown.Item>By Count (1000)</Dropdown.Item>
+									<Dropdown.Item>Domain</Dropdown.Item>
+								</Dropdown.Menu>
+								<Dropdown.Item divider />
+								<Dropdown.Item style={{ color: 'red' }}>Delete</Dropdown.Item>
+							</Dropdown>
+						</h3>
 					</FlexboxGrid.Item>
 					<FlexboxGrid.Item colspan={12} style={{ textAlign: 'end' }}>
 						<SelectPicker data={columnsData} style={{ width: 150, display: 'inline-block' }} value={filterColumn} onChange={setFilterColumn} />
