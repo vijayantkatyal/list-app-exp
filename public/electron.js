@@ -211,6 +211,14 @@ ipcMain.on("message", (event, data) => {
 		// });
 	}
 
+	// removing missing emails data
+	if(data.query == "remove_missing_email_from_table")
+	{
+		database(data.table_name).where("email", null).delete().then(function(res){
+			event.returnValue = "done";
+		});	
+	}
+
 	// delete specific table data
 	if(data.query == "delete_table")
 	{

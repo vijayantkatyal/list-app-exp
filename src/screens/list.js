@@ -232,6 +232,15 @@ export default function CategoryPage() {
 		// alert(_res);
 	}
 
+	async function removeMissingEmail() {
+		var _req = {
+			"query": "remove_missing_email_from_table",
+			"table_name": id
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		console.log(_res);
+	}
+
 	const renderIconButton = (props, ref) => {
 		return (
 		  <IconButton {...props} ref={ref} icon={<GearIcon />} circle color="red" appearance="ghost" style={{ marginLeft: '10px' }}/>
@@ -253,7 +262,7 @@ export default function CategoryPage() {
 									<Dropdown.Item>Emails (Domain)</Dropdown.Item>
 									<Dropdown.Item onSelect={removeDuplicates}>Remove Duplicates</Dropdown.Item>
 									<Dropdown.Item>Remove Emails (Filter)</Dropdown.Item>
-									<Dropdown.Item>Remove Null Data</Dropdown.Item>
+									<Dropdown.Item onSelect={removeMissingEmail}>Remove Null Data</Dropdown.Item>
 								</Dropdown.Menu>
 								<Dropdown.Menu title="Actions">
 									<Dropdown.Item>Merge</Dropdown.Item>
