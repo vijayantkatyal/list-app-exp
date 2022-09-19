@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton } from 'rsuite';
+import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton, Modal, Placeholder, Button } from 'rsuite';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { filter } from 'lodash';
 import GearIcon from '@rsuite/icons/Gear';
@@ -27,6 +27,11 @@ export default function CategoryPage() {
 	const [limit, setLimit] = useState(50);
 	const [page, setPage] = useState(1);
 	const [totalLength, setTotalLength] = useState(0);
+
+	const [rmInput, setRmInput] = useState(null);
+	const [openRM, setOpenRM] = useState(false);
+  	const handleOpenRM = () => setOpenRM(true);
+  	const handleCloseRM = () => setOpenRM(false);
 
 	const handleChangeLimit = dataKey => {
 		setPage(1);
@@ -149,6 +154,32 @@ export default function CategoryPage() {
 		fetchData();
 	}, [id]);
 
+	function renameList() {
+		handleOpenRM();
+	}
+
+	async function handleSubmitRM() {
+
+		if(rmInput != null && rmInput != "")
+		{
+			// //Logic to delete
+			var _req = {
+				"query": "rename_table",
+				"table_name": id,
+				"table_name_new": rmInput
+			};
+			var _res = await ipcRenderer.sendSync('message', _req);
+			// navigate to welcome / add list
+			handleCloseRM();
+			navigate("/list/"+rmInput);
+			setRmInput(null);
+		}
+		else
+		{
+			return;
+		}
+	}
+
 	async function deleteList() {
 		var result = window.confirm("Sure, Want to delete this list?");
 		if (result) {
@@ -204,6 +235,7 @@ export default function CategoryPage() {
 						<h3>
 							{id}
 							<Dropdown renderToggle={renderIconButton}>
+								<Dropdown.Item onSelect={renameList}>Rename</Dropdown.Item>
 								<Dropdown.Item onSelect={exportList}>Export (CSV)</Dropdown.Item>
 								<Dropdown.Item divider />
 								<Dropdown.Menu title="Repair">
@@ -262,6 +294,23 @@ export default function CategoryPage() {
 					onChangeLimit={handleChangeLimit}
 				/>
 			</div>
+
+			<Modal open={openRM} onClose={handleCloseRM} backdrop="static">
+				<Modal.Header>
+					<Modal.Title>Rename List</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Input placeholder="List Name" value={rmInput} onChange={setRmInput} />
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={handleSubmitRM} appearance="primary">
+						Ok
+					</Button>
+					<Button onClick={handleCloseRM} appearance="subtle">
+						Cancel
+					</Button>
+				</Modal.Footer>
+			</Modal>
 		</div>
 	);
 }

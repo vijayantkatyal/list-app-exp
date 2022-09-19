@@ -20,7 +20,7 @@
 
 [Done] export (csv)
 
-- rename
+[Done] rename
 - clear
 - delete row
 

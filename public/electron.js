@@ -160,7 +160,15 @@ ipcMain.on("message", (event, data) => {
 		});	
 	}
 
-	// get specific table data
+	// rename specific table data
+	if(data.query == "rename_table")
+	{
+		database.schema.renameTable(data.table_name, data.table_name_new).then(function(res){
+			event.returnValue = "renamed";
+		})
+	}
+
+	// delete specific table data
 	if(data.query == "delete_table")
 	{
 		database.schema.dropTableIfExists(data.table_name).then(function(res){
