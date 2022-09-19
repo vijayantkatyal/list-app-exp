@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton } from 'rsuite';
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { filter } from 'lodash';
 import GearIcon from '@rsuite/icons/Gear';
 import * as Papa from "papaparse";
@@ -10,6 +10,7 @@ const { Column, HeaderCell, Cell } = Table;
 
 export default function CategoryPage() {
 	let { id } = useParams();
+	const navigate = useNavigate();
 
 	const { ipcRenderer } = window;
 
@@ -148,6 +149,21 @@ export default function CategoryPage() {
 		fetchData();
 	}, [id]);
 
+	async function deleteList() {
+		var result = window.confirm("Sure, Want to delete this list?");
+		if (result) {
+			// //Logic to delete
+			var _req = {
+				"query": "delete_table",
+				"table_name": id
+			};
+			var _res = await ipcRenderer.sendSync('message', _req);
+			alert(_res);
+			// navigate to welcome / add list
+			navigate("/info");
+		}
+	}
+
 	function exportList() {
 
 		// console.log(columnsData);
@@ -188,7 +204,6 @@ export default function CategoryPage() {
 						<h3>
 							{id}
 							<Dropdown renderToggle={renderIconButton}>
-								<Dropdown.Item>Clear</Dropdown.Item>
 								<Dropdown.Item onSelect={exportList}>Export (CSV)</Dropdown.Item>
 								<Dropdown.Item divider />
 								<Dropdown.Menu title="Repair">
@@ -207,7 +222,7 @@ export default function CategoryPage() {
 									<Dropdown.Item>Domain</Dropdown.Item>
 								</Dropdown.Menu>
 								<Dropdown.Item divider />
-								<Dropdown.Item style={{ color: 'red' }}>Delete</Dropdown.Item>
+								<Dropdown.Item onSelect={deleteList} style={{ color: 'red' }}>Delete</Dropdown.Item>
 							</Dropdown>
 						</h3>
 					</FlexboxGrid.Item>

@@ -159,6 +159,14 @@ ipcMain.on("message", (event, data) => {
 			event.returnValue = res;
 		});	
 	}
+
+	// get specific table data
+	if(data.query == "delete_table")
+	{
+		database.schema.dropTableIfExists(data.table_name).then(function(res){
+			event.returnValue = "deleted";
+		})
+	}
 });
 
 // The code above has been adapted from a starter example in the Electron docs:

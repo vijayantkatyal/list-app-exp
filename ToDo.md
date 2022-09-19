@@ -19,10 +19,12 @@
 [Done] search
 
 [Done] export (csv)
+
 - rename
-- delete
 - clear
 - delete row
+
+[Done] delete list
 
 - remove duplicates from single list (keep oringal, craete two: without duplicate, and duplicate removed data)
 - remove emails / rows based on filter text e.g. junk word in email, @ missing

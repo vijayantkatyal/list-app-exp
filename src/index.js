@@ -22,6 +22,12 @@ root.render(
 						<ListPage/>
 					</React.Suspense>
 				} />
+
+				<Route path="info" element={
+					<React.Suspense fallback={<>...</>}>
+						<Overview/>
+					</React.Suspense>
+				} />
 			</Route>
 		</Routes>
 	</BrowserRouter>
