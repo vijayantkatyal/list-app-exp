@@ -21,22 +21,22 @@
 [Done] export (csv)
 
 [Done] rename
-- clear
-- delete row
-
 [Done] delete list
 
-- remove duplicates from single list (keep oringal, craete two: without duplicate, and duplicate removed data)
-- remove emails / rows based on filter text e.g. junk word in email, @ missing
-- remove if emails missing
+[Done] remove duplicates from single list (keep oringal, craete two: without duplicate, and duplicate removed data)
+[⚡] remove emails / rows based on filter text e.g. junk word in email, @ missing
+[⚡] remove if emails missing
 
-- repair domains (email)
-
-- split list by count (e.g. 1000), domain (e.g. gmail)
-
-- union / merge two or more lists together into new list
-- subtract list from another list(s) (create new list)
-- unique / commong from list(s) (create new list)
+[⚡] union / merge two or more lists together into new list
+[⚡] subtract list from another list(s) (create new list)
+[⚡] unique / commong from list(s) (create new list)
 
 [Bug]
 [Fixed] map columns to first name, last name and email (to avoid mapping during ops) (means fixed columns, instead of dynamic)
+
+[Later]
+
+- clear list
+- delete row
+- repair domains (email)
+- split list by count (e.g. 1000), domain (e.g. gmail)

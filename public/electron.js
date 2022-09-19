@@ -168,6 +168,49 @@ ipcMain.on("message", (event, data) => {
 		})
 	}
 
+	// remove duplicates
+	if(data.query == "remove_duplicate_table")
+	{
+		// only unique data
+
+		database(data.table_name).distinct('email').select('first_name', 'last_name', 'email').then(function(res){
+			
+			var _new_table_only_unique = data.table_name+"_unique";
+			var _new_table_only_duplicate = data.table_name+"_duplicate";
+
+			database.schema.createTable(_new_table_only_unique, t => {
+				t.increments('id').primary();
+				t.string("first_name", 100);
+				t.string("last_name", 100);
+				t.string("email", 100);
+			}).then(function(u_res) {
+				database.batchInsert(_new_table_only_unique, res, 500).then(function(){
+					database.from(data.table_name).groupBy("email").count('email as email_count').orderBy("email").having("email_count", ">", 1).select("first_name", "last_name", "email").then(function(d_res){
+						
+						database.schema.createTable(_new_table_only_duplicate, t => {
+							t.increments('id').primary();
+							t.string("first_name", 100);
+							t.string("last_name", 100);
+							t.string("email", 100);
+						}).then(function(d_t_res) {
+							var _n_res = d_res.map(({email_count, ...item}) => item);
+							database.batchInsert(_new_table_only_duplicate, _n_res, 500).then(function(){
+								event.returnValue = "done";
+							});
+						});
+					});
+				});
+			});
+		});
+
+		// only duplicate data
+
+		// database.from("abc").groupBy("email").count('email as email_count').orderBy("email").having("email_count", ">", 1).select("first_name", "last_name", "email").then(function(res){
+		// 	var _n_res = res.map(({email_count, ...item}) => item);
+		// 	event.returnValue = _n_res;
+		// });
+	}
+
 	// delete specific table data
 	if(data.query == "delete_table")
 	{

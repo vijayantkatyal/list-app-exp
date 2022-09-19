@@ -176,7 +176,7 @@ export default function CategoryPage() {
 		}
 		else
 		{
-			return;
+			alert("enter a list name");
 		}
 	}
 
@@ -221,6 +221,17 @@ export default function CategoryPage() {
 		}
 	}
 
+	async function removeDuplicates() {
+
+		var _req = {
+			"query": "remove_duplicate_table",
+			"table_name": id
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		console.log(_res);
+		// alert(_res);
+	}
+
 	const renderIconButton = (props, ref) => {
 		return (
 		  <IconButton {...props} ref={ref} icon={<GearIcon />} circle color="red" appearance="ghost" style={{ marginLeft: '10px' }}/>
@@ -240,7 +251,7 @@ export default function CategoryPage() {
 								<Dropdown.Item divider />
 								<Dropdown.Menu title="Repair">
 									<Dropdown.Item>Emails (Domain)</Dropdown.Item>
-									<Dropdown.Item>Remove Duplicates</Dropdown.Item>
+									<Dropdown.Item onSelect={removeDuplicates}>Remove Duplicates</Dropdown.Item>
 									<Dropdown.Item>Remove Emails (Filter)</Dropdown.Item>
 									<Dropdown.Item>Remove Null Data</Dropdown.Item>
 								</Dropdown.Menu>
