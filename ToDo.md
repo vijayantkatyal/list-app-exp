@@ -33,10 +33,12 @@
 
 [Bug]
 [Fixed] map columns to first name, last name and email (to avoid mapping during ops) (means fixed columns, instead of dynamic)
+- clear state when list changes
 
 [Later]
 
-- clear list
-- delete row
-- repair domains (email)
-- split list by count (e.g. 1000), domain (e.g. gmail)
+[?] clear list
+[?] delete row
+[?] repair domains (email)
+- split list by count (e.g. 1000)
+- split list by domain (e.g. gmail)

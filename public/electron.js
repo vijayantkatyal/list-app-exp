@@ -337,6 +337,38 @@ ipcMain.on("message", (event, data) => {
 			});
 		});
 	}
+
+	if(data.query == "split_email_tables")
+	{
+		var domains = data.domains;
+
+		var _done = 0;
+
+		domains.forEach((domain, index) => {
+			database.raw("SELECT first_name, last_name, email FROM "+ data.main_table +" WHERE email LIKE '%"+ domain +"%'").then(function(table_data){
+
+				var _n_table_name = data.main_table + "_" + domain;
+				
+				database.schema.createTable(_n_table_name, t => {
+					t.increments('id').primary();
+					t.string("first_name", 100);
+					t.string("last_name", 100);
+					t.string("email", 100);
+				}).then(function(res) {
+		
+					database.batchInsert(_n_table_name, table_data, 500).then(function(){
+						_done += 1;
+
+						if(domains.length == _done)
+						{
+							event.returnValue = "done";
+						}
+					});
+		
+				});
+			});
+		});
+	}
 });
 
 // The code above has been adapted from a starter example in the Electron docs:
