@@ -42,19 +42,36 @@ export default function CategoryPage() {
 	const picker = useRef();
 	const [value, setValue] = useState([]);
 
+	const picker_TWO = useRef();
+	const [valueTWO, setValueTWO] = useState([]);
+
 	const handleChange = value => {
 		setValue(value);
+	};
+
+	const handleChangeTWO = value => {
+		setValueTWO(value);
 	};
 
 	const handleCheckAll = (value, checked) => {
 		setValue(checked ? lists : []);
 	};
 
+	const handleCheckAllTWO = (value, checked) => {
+		setValueTWO(checked ? lists_TWO : []);
+	};
+
 	const [lists, setLists] = useState([]);
+	const [lists_TWO, setLists_TWO] = useState([]);
 
 	const listsData = lists?.filter(i => i[0] != "id").map(
 		item => ({ label: item, value: item })
 	);
+
+	const listsData_TWO = lists_TWO?.filter(i => i[0] != "id").map(
+		item => ({ label: item, value: item })
+	);
+
 
 	const footerStyles = {
 		padding: '10px 2px',
@@ -89,6 +106,11 @@ export default function CategoryPage() {
 	const columnsData = columns?.filter(i => i[0] != "id").map(
 		item => ({ label: item[0], value: item[0] })
 	);
+
+	const [listSName, setListSName] = useState(null);
+	const [openSL, setOpenSL] = useState(false);
+	const handleOpenSL = () => setOpenSL(true);
+	const handleCloseSL = () => setOpenSL(false);
 
 
 	// const data = defaultData.filter((v, i) => {
@@ -354,7 +376,47 @@ export default function CategoryPage() {
 		return (
 		  <IconButton {...props} ref={ref} icon={<GearIcon />} circle color="red" appearance="ghost" style={{ marginLeft: '10px' }}/>
 		);
-	  };
+	};
+
+	async function subtractList() {
+		// get lists names
+		var _req = {
+			"query": "get_all_tables",
+			"table_name": null
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		
+		var _dd = _res.filter((i) => i.name != id).map((item, index) => {
+			return item.name
+		});
+		
+		setLists_TWO(_dd);
+
+		handleOpenSL();
+	}
+
+	async function handleSubmitSL() {
+
+		if(listSName != null && listSName != "" && valueTWO.length > 0)
+		{
+			// send all list names
+			// get lists names
+			var _req = {
+				"query": "subtract_tables",
+				"table_name": listSName,
+				"main_table": id,
+				"tables": valueTWO
+			};
+			var _res = await ipcRenderer.sendSync('message', _req);
+			console.log(_res);
+
+			handleCloseSL();
+		}
+		else
+		{
+			alert("select atleast one list(s) and list name")
+		}
+	}
 
 	return (
 		<div>
@@ -375,7 +437,7 @@ export default function CategoryPage() {
 								</Dropdown.Menu>
 								<Dropdown.Menu title="Actions">
 									<Dropdown.Item onSelect={mergeLists}>Merge</Dropdown.Item>
-									<Dropdown.Item>Subtract</Dropdown.Item>
+									<Dropdown.Item onSelect={subtractList}>Subtract</Dropdown.Item>
 									<Dropdown.Item>Unique</Dropdown.Item>
 								</Dropdown.Menu>
 								<Dropdown.Menu title="Split">
@@ -468,7 +530,7 @@ export default function CategoryPage() {
 				</Modal.Header>
 				<Modal.Body>
 
-					<Input placeholder="List Name" value={listMName} onChange={setListMName}/>
+					<Input placeholder="New List Name" value={listMName} onChange={setListMName}/>
 					<br/>
 					<CheckPicker
 						block={true}
@@ -507,6 +569,61 @@ export default function CategoryPage() {
 						Ok
 					</Button>
 					<Button onClick={handleCloseML} appearance="subtle">
+						Cancel
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Modal open={openSL} onClose={handleCloseSL} backdrop="static">
+				<Modal.Header>
+					<Modal.Title>Subtract Lists</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+
+					Main List Name
+					<br/>
+					<b>{id}</b>
+					<br/>
+					<br/>
+					<Input placeholder="New List Name" value={listSName} onChange={setListSName}/>
+					<br/>
+					<CheckPicker
+						block={true}
+						data={listsData_TWO}
+						placeholder="Select Lists to Subtract"
+						ref={picker_TWO}
+						value={valueTWO}
+						onChange={handleChangeTWO}
+						renderExtraFooter={() => (
+						<div style={footerStyles}>
+							<Checkbox
+								inline
+								indeterminate={valueTWO.length > 0 && valueTWO.length < lists_TWO.length}
+								checked={valueTWO.length === lists_TWO.length}
+								onChange={handleCheckAllTWO}
+							>
+								Check all
+							</Checkbox>
+
+							<Button
+								style={footerButtonStyle}
+								appearance="primary"
+								size="sm"
+								onClick={() => {
+									picker_TWO.current.close();
+								}}
+							>
+							Ok
+							</Button>
+						</div>
+						)}
+					/>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={handleSubmitSL} appearance="primary">
+						Ok
+					</Button>
+					<Button onClick={handleCloseSL} appearance="subtle">
 						Cancel
 					</Button>
 				</Modal.Footer>

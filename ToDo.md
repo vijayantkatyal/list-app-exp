@@ -28,7 +28,7 @@
 [Done] remove if emails missing
 
 [Done] union / merge two or more lists together into new list
-[⚡] subtract list from another list(s) (create new list)
+[Done] subtract list from another list(s) (create new list)
 [⚡] unique / commong from list(s) (create new list)
 
 [Bug]
