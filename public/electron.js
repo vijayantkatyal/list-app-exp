@@ -310,6 +310,33 @@ ipcMain.on("message", (event, data) => {
 			});
 		});
 	}
+
+	// subtract tables
+	if(data.query == "unique_tables")
+	{
+		var _tables = data.tables;
+
+		var sql = '';
+		_tables.forEach((table_name, index) => {
+			var _q = " INTERSECT SELECT first_name, last_name, email FROM " + table_name;
+			sql += _q;
+		});
+
+		database.raw("SELECT first_name, last_name, email FROM " + data.main_table + " " + sql).then(function(table_data){
+			database.schema.createTable(data.table_name, t => {
+				t.increments('id').primary();
+				t.string("first_name", 100);
+				t.string("last_name", 100);
+				t.string("email", 100);
+			}).then(function(res) {
+	
+				database.batchInsert(data.table_name, table_data, 500).then(function(){
+					event.returnValue = "data_created";
+				});
+	
+			});
+		});
+	}
 });
 
 // The code above has been adapted from a starter example in the Electron docs:

@@ -45,12 +45,19 @@ export default function CategoryPage() {
 	const picker_TWO = useRef();
 	const [valueTWO, setValueTWO] = useState([]);
 
+	const picker_THREE = useRef();
+	const [valueTHREE, setValueTHREE] = useState([]);
+
 	const handleChange = value => {
 		setValue(value);
 	};
 
 	const handleChangeTWO = value => {
 		setValueTWO(value);
+	};
+
+	const handleChangeTHREE = value => {
+		setValueTHREE(value);
 	};
 
 	const handleCheckAll = (value, checked) => {
@@ -61,14 +68,23 @@ export default function CategoryPage() {
 		setValueTWO(checked ? lists_TWO : []);
 	};
 
+	const handleCheckAllTHREE = (value, checked) => {
+		setValueTHREE(checked ? lists_THREE : []);
+	};
+
 	const [lists, setLists] = useState([]);
 	const [lists_TWO, setLists_TWO] = useState([]);
+	const [lists_THREE, setLists_THREE] = useState([]);
 
 	const listsData = lists?.filter(i => i[0] != "id").map(
 		item => ({ label: item, value: item })
 	);
 
 	const listsData_TWO = lists_TWO?.filter(i => i[0] != "id").map(
+		item => ({ label: item, value: item })
+	);
+
+	const listsData_THREE = lists_THREE?.filter(i => i[0] != "id").map(
 		item => ({ label: item, value: item })
 	);
 
@@ -111,6 +127,11 @@ export default function CategoryPage() {
 	const [openSL, setOpenSL] = useState(false);
 	const handleOpenSL = () => setOpenSL(true);
 	const handleCloseSL = () => setOpenSL(false);
+
+	const [listUName, setListUName] = useState(null);
+	const [openUL, setOpenUL] = useState(false);
+	const handleOpenUL = () => setOpenUL(true);
+	const handleCloseUL = () => setOpenUL(false);
 
 
 	// const data = defaultData.filter((v, i) => {
@@ -418,6 +439,45 @@ export default function CategoryPage() {
 		}
 	}
 
+	async function uniqueList() {
+		var _req = {
+			"query": "get_all_tables",
+			"table_name": null
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		
+		var _dd = _res.filter((i) => i.name != id).map((item, index) => {
+			return item.name
+		});
+		
+		setLists_THREE(_dd);
+
+		handleOpenUL();
+	}
+
+	async function handleSubmitUL() {
+
+		if(listUName != null && listUName != "" && valueTHREE.length > 0)
+		{
+			// send all list names
+			// get lists names
+			var _req = {
+				"query": "unique_tables",
+				"table_name": listUName,
+				"main_table": id,
+				"tables": valueTHREE
+			};
+			var _res = await ipcRenderer.sendSync('message', _req);
+			console.log(_res);
+
+			handleCloseUL();
+		}
+		else
+		{
+			alert("select atleast one list(s) and list name")
+		}
+	}
+
 	return (
 		<div>
 			<div className="show-grid">
@@ -438,7 +498,7 @@ export default function CategoryPage() {
 								<Dropdown.Menu title="Actions">
 									<Dropdown.Item onSelect={mergeLists}>Merge</Dropdown.Item>
 									<Dropdown.Item onSelect={subtractList}>Subtract</Dropdown.Item>
-									<Dropdown.Item>Unique</Dropdown.Item>
+									<Dropdown.Item onSelect={uniqueList}>Unique</Dropdown.Item>
 								</Dropdown.Menu>
 								<Dropdown.Menu title="Split">
 									<Dropdown.Item>By Count (1000)</Dropdown.Item>
@@ -624,6 +684,61 @@ export default function CategoryPage() {
 						Ok
 					</Button>
 					<Button onClick={handleCloseSL} appearance="subtle">
+						Cancel
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Modal open={openUL} onClose={handleCloseUL} backdrop="static">
+				<Modal.Header>
+					<Modal.Title>Unique Lists</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+
+					Main List Name
+					<br/>
+					<b>{id}</b>
+					<br/>
+					<br/>
+					<Input placeholder="New List Name" value={listUName} onChange={setListUName}/>
+					<br/>
+					<CheckPicker
+						block={true}
+						data={listsData_THREE}
+						placeholder="Select Lists for Unique"
+						ref={picker_THREE}
+						value={valueTHREE}
+						onChange={handleChangeTHREE}
+						renderExtraFooter={() => (
+						<div style={footerStyles}>
+							<Checkbox
+								inline
+								indeterminate={valueTHREE.length > 0 && valueTHREE.length < lists_THREE.length}
+								checked={valueTHREE.length === lists_THREE.length}
+								onChange={handleCheckAllTHREE}
+							>
+								Check all
+							</Checkbox>
+
+							<Button
+								style={footerButtonStyle}
+								appearance="primary"
+								size="sm"
+								onClick={() => {
+									picker_THREE.current.close();
+								}}
+							>
+							Ok
+							</Button>
+						</div>
+						)}
+					/>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={handleSubmitUL} appearance="primary">
+						Ok
+					</Button>
+					<Button onClick={handleCloseUL} appearance="subtle">
 						Cancel
 					</Button>
 				</Modal.Footer>

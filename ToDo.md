@@ -29,7 +29,7 @@
 
 [Done] union / merge two or more lists together into new list
 [Done] subtract list from another list(s) (create new list)
-[⚡] unique / commong from list(s) (create new list)
+[Done] unique / common from list(s) (create new list)
 
 [Bug]
 [Fixed] map columns to first name, last name and email (to avoid mapping during ops) (means fixed columns, instead of dynamic)
