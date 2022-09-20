@@ -254,6 +254,35 @@ ipcMain.on("message", (event, data) => {
 			event.returnValue = "deleted";
 		})
 	}
+
+	// merge tables
+	if(data.query == "merge_tables")
+	{
+		var _first_table = data.tables[0];
+		var _tables = data.tables;
+		_tables.shift();
+
+		var sql = '';
+		_tables.forEach((table_name, index) => {
+			var _q = " UNION ALL SELECT first_name, last_name, email FROM " + table_name;
+			sql += _q;
+		});
+
+		database.raw("SELECT first_name, last_name, email FROM " + _first_table + " " + sql).then(function(table_data){
+			database.schema.createTable(data.table_name, t => {
+				t.increments('id').primary();
+				t.string("first_name", 100);
+				t.string("last_name", 100);
+				t.string("email", 100);
+			}).then(function(res) {
+	
+				database.batchInsert(data.table_name, table_data, 500).then(function(){
+					event.returnValue = "data_created";
+				});
+	
+			});
+		});
+	}
 });
 
 // The code above has been adapted from a starter example in the Electron docs:

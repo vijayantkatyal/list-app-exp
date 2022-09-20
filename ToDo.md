@@ -27,7 +27,7 @@
 [Done] remove emails / rows based on filter text e.g. junk word in email, @ missing
 [Done] remove if emails missing
 
-[⚡] union / merge two or more lists together into new list
+[Done] union / merge two or more lists together into new list
 [⚡] subtract list from another list(s) (create new list)
 [⚡] unique / commong from list(s) (create new list)
 

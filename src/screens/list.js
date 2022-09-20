@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useState } from 'react';
-import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton, Modal, Placeholder, Button } from 'rsuite';
+import { Fragment, useEffect, useState, useRef } from 'react';
+import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton, Modal, Placeholder, Button, CheckPicker, Checkbox } from 'rsuite';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { filter } from 'lodash';
 import GearIcon from '@rsuite/icons/Gear';
@@ -33,10 +33,44 @@ export default function CategoryPage() {
   	const handleOpenRM = () => setOpenRM(true);
   	const handleCloseRM = () => setOpenRM(false);
 
-	  const [rdeInput, setRdeInput] = useState(null);
-	  const [openRDE, setOpenRDE] = useState(false);
-		const handleOpenRDE = () => setOpenRDE(true);
-		const handleCloseRDE = () => setOpenRDE(false);
+	const [rdeInput, setRdeInput] = useState(null);
+	const [openRDE, setOpenRDE] = useState(false);
+	const handleOpenRDE = () => setOpenRDE(true);
+	const handleCloseRDE = () => setOpenRDE(false);
+
+	
+	const picker = useRef();
+	const [value, setValue] = useState([]);
+
+	const handleChange = value => {
+		setValue(value);
+	};
+
+	const handleCheckAll = (value, checked) => {
+		setValue(checked ? lists : []);
+	};
+
+	const [lists, setLists] = useState([]);
+
+	const listsData = lists?.filter(i => i[0] != "id").map(
+		item => ({ label: item, value: item })
+	);
+
+	const footerStyles = {
+		padding: '10px 2px',
+		borderTop: '1px solid #e5e5e5'
+	};
+
+	const footerButtonStyle = {
+		float: 'right',
+		marginRight: 10,
+		marginTop: 2
+	};
+
+	const [listMName, setListMName] = useState(null);
+	const [openML, setOpenML] = useState(false);
+	const handleOpenML = () => setOpenML(true);
+	const handleCloseML = () => setOpenML(false);
 
 	const handleChangeLimit = dataKey => {
 		setPage(1);
@@ -270,6 +304,52 @@ export default function CategoryPage() {
 		console.log(_res);
 	}
 
+	async function mergeLists() {
+
+		// get lists names
+		var _req = {
+			"query": "get_all_tables",
+			"table_name": null
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		
+		var _dd = _res.map((item, index) => {
+			return item.name
+		});
+		
+		setLists(_dd);
+
+		// console.log(_dd);
+		// console.log(listsData);
+
+		// show in checkboxes
+		// with select all option
+
+		handleOpenML();
+	}
+
+	async function handleSubmitML() {
+
+		if(listMName != null && listMName != "" && value.length > 1)
+		{
+			// send all list names
+			// get lists names
+			var _req = {
+				"query": "merge_tables",
+				"table_name": listMName,
+				"tables": value
+			};
+			var _res = await ipcRenderer.sendSync('message', _req);
+			console.log(_res);
+
+			handleCloseML();
+		}
+		else
+		{
+			alert("select atleast 2 lists and list name")
+		}
+	}
+
 	const renderIconButton = (props, ref) => {
 		return (
 		  <IconButton {...props} ref={ref} icon={<GearIcon />} circle color="red" appearance="ghost" style={{ marginLeft: '10px' }}/>
@@ -294,7 +374,7 @@ export default function CategoryPage() {
 									<Dropdown.Item onSelect={removeMissingEmail}>Remove Null Data</Dropdown.Item>
 								</Dropdown.Menu>
 								<Dropdown.Menu title="Actions">
-									<Dropdown.Item>Merge</Dropdown.Item>
+									<Dropdown.Item onSelect={mergeLists}>Merge</Dropdown.Item>
 									<Dropdown.Item>Subtract</Dropdown.Item>
 									<Dropdown.Item>Unique</Dropdown.Item>
 								</Dropdown.Menu>
@@ -377,6 +457,56 @@ export default function CategoryPage() {
 						Ok
 					</Button>
 					<Button onClick={handleCloseRDE} appearance="subtle">
+						Cancel
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Modal open={openML} onClose={handleCloseML} backdrop="static">
+				<Modal.Header>
+					<Modal.Title>Merge Lists</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+
+					<Input placeholder="List Name" value={listMName} onChange={setListMName}/>
+					<br/>
+					<CheckPicker
+						block={true}
+						data={listsData}
+						placeholder="Select Lists to Merge"
+						ref={picker}
+						value={value}
+						onChange={handleChange}
+						renderExtraFooter={() => (
+						<div style={footerStyles}>
+							<Checkbox
+								inline
+								indeterminate={value.length > 0 && value.length < lists.length}
+								checked={value.length === lists.length}
+								onChange={handleCheckAll}
+							>
+								Check all
+							</Checkbox>
+
+							<Button
+								style={footerButtonStyle}
+								appearance="primary"
+								size="sm"
+								onClick={() => {
+									picker.current.close();
+								}}
+							>
+							Ok
+							</Button>
+						</div>
+						)}
+					/>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={handleSubmitML} appearance="primary">
+						Ok
+					</Button>
+					<Button onClick={handleCloseML} appearance="subtle">
 						Cancel
 					</Button>
 				</Modal.Footer>
