@@ -627,7 +627,7 @@ export default function CategoryPage() {
 					<Modal.Title>Filter Emails</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<Input placeholder="junk demo" value={rdeInput} onChange={setRdeInput} />
+					<Input placeholder="junk, demo" value={rdeInput} onChange={setRdeInput} />
 					list of words to filter
 					<br/>
 					<br/>

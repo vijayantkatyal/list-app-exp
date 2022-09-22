@@ -41,9 +41,9 @@
 [x] csv no header support (can be supported but different upload flow is required)
 [Done] by default email search
 [Done] ctl + f keyboard search shortcut
+[Done] email filter check (with comma seaparated list)
 > split by max 10 lists or count
 > split domain (comma instead of space)
-> email filter check
 
 > add record
 > edit record

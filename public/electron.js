@@ -223,7 +223,7 @@ ipcMain.on("message", (event, data) => {
 	if(data.query == "filter_email_from_table")
 	{
 		var words = data.words;
-		var words_array = words.split(" ");
+		var words_array = words.split(",");
 
 		// database(data.table_name).whereRaw("email NOT LIKE '%@%'").orWhereRaw("email LIKE '%Nelle%'").select().then(function(res){
 		// 	event.returnValue = res;
