@@ -4,7 +4,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { filter } from 'lodash';
 import GearIcon from '@rsuite/icons/Gear';
 import * as Papa from "papaparse";
-
+import { HotKeys } from "react-hotkeys";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -42,6 +42,7 @@ export default function CategoryPage() {
   	const handleOpenSBE = () => setOpenSBE(true);
   	const handleCloseSBE = () => setOpenSBE(false);
 
+	const search_containerRef = useRef();
 	
 	const picker = useRef();
 	const [value, setValue] = useState([]);
@@ -254,6 +255,8 @@ export default function CategoryPage() {
 
 		getColumns();
 		fetchData();
+
+		search_containerRef.current.focus();
 	}, [id]);
 
 	function renameList() {
@@ -523,7 +526,18 @@ export default function CategoryPage() {
 		}
 	}
 
+	const keyMap = {
+		SEARCH: "ctrl+f"
+	};
+
+	const handlers = {
+		SEARCH: () => {
+			search_containerRef.current.focus();
+		}
+	}
+
 	return (
+		<HotKeys keyMap={keyMap} handlers={handlers}>
 		<div>
 			<div className="show-grid">
 				<FlexboxGrid justify="space-between">
@@ -556,7 +570,7 @@ export default function CategoryPage() {
 					</FlexboxGrid.Item>
 					<FlexboxGrid.Item colspan={12} style={{ textAlign: 'end' }}>
 						<SelectPicker data={columnsData} style={{ width: 150, display: 'inline-block' }} value={filterColumn} onChange={setFilterColumn} />
-						<Input value={filterText} onChange={setFilterText} style={{ width: 200, display: 'inline-block' }} placeholder="keyword here"/>
+						<Input value={filterText} onChange={setFilterText} style={{ width: 200, display: 'inline-block' }} ref={search_containerRef} placeholder="search here"/>
 					</FlexboxGrid.Item>
 				</FlexboxGrid>
 			</div>
@@ -836,5 +850,6 @@ export default function CategoryPage() {
 				</Modal.Footer>
 			</Modal>
 		</div>
+		</HotKeys>
 	);
 }
