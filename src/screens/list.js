@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState, useRef } from 'react';
-import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton, Modal, Placeholder, Button, CheckPicker, Checkbox, TagInput } from 'rsuite';
+import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton, Modal, Placeholder, Button, CheckPicker, Checkbox, TagInput, Form } from 'rsuite';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { filter } from 'lodash';
 import GearIcon from '@rsuite/icons/Gear';
@@ -97,6 +97,18 @@ export default function CategoryPage() {
 	const [openRM, setOpenRM] = useState(false);
   	const handleOpenRM = () => setOpenRM(true);
   	const handleCloseRM = () => setOpenRM(false);
+
+	const [openNRM, setOpenNRM] = useState(false);
+  	const handleOpenNRM = () => setOpenNRM(true);
+  	const handleCloseNRM = () => setOpenNRM(false);
+
+	const initNRFormValue = {
+		first_name: "",
+		last_name: "",
+		email: ""
+	}
+
+	const [nRFormValue, setNRFormValue] = useState(initNRFormValue);
 
 	const [rdeInput, setRdeInput] = useState(null);
 	const [openRDE, setOpenRDE] = useState(false);
@@ -491,7 +503,7 @@ export default function CategoryPage() {
 
 	const renderIconButton = (props, ref) => {
 		return (
-		  <IconButton {...props} ref={ref} icon={<GearIcon />} circle color="red" appearance="ghost" style={{ marginLeft: '10px' }}/>
+		  <IconButton {...props} ref={ref} icon={<GearIcon />} circle color="green" appearance="ghost" style={{ marginLeft: '10px' }}/>
 		);
 	};
 
@@ -687,6 +699,35 @@ export default function CategoryPage() {
 		}
 	}
 
+	function addNewRow() {
+		handleOpenNRM();
+	}
+
+	async function handleSubmitNRM() {
+		console.log(nRFormValue);
+		// alert("submit");
+
+		if(nRFormValue.email == null || nRFormValue.email == "")
+		{
+			alert("Email is Required");
+		}
+
+		if(nRFormValue.email != null && nRFormValue.email != "")
+		{
+			var _req = {
+				"query": "insert_new_row",
+				"table_name": id,
+				"first_name": nRFormValue.first_name,
+				"last_name": nRFormValue.last_name,
+				"email": nRFormValue.email
+			};
+
+			var _res = await ipcRenderer.sendSync('message', _req);
+
+			handleCloseNRM();
+		}
+	}
+
 	return (
 		<HotKeys keyMap={keyMap} handlers={handlers}>
 		<div>
@@ -697,6 +738,7 @@ export default function CategoryPage() {
 							{id}
 							<Dropdown renderToggle={renderIconButton}>
 								<Dropdown.Item onSelect={renameList}>Rename</Dropdown.Item>
+								<Dropdown.Item onSelect={addNewRow}>Add Record</Dropdown.Item>
 								<Dropdown.Item onSelect={exportList}>Export (CSV)</Dropdown.Item>
 								<Dropdown.Item divider />
 								<Dropdown.Menu title="Repair">
@@ -989,6 +1031,40 @@ export default function CategoryPage() {
 						Ok
 					</Button>
 					<Button onClick={handleCloseSBE} appearance="subtle">
+						Cancel
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Modal open={openNRM} onClose={handleCloseNRM} backdrop="static">
+				<Modal.Header>
+					<Modal.Title>Add Row</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Form fluid formValue={nRFormValue} onChange={formValue => setNRFormValue(formValue)}>
+
+						<Form.Group controlId="first_name">
+							<Form.ControlLabel>First Name</Form.ControlLabel>
+							<Form.Control name="first_name" required/>
+						</Form.Group>
+
+						<Form.Group controlId="last_name">
+							<Form.ControlLabel>Last Name</Form.ControlLabel>
+							<Form.Control name="last_name" required/>
+						</Form.Group>
+
+						<Form.Group controlId="email">
+							<Form.ControlLabel>Email</Form.ControlLabel>
+							<Form.Control name="email" required/>
+						</Form.Group>
+
+					</Form>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={handleSubmitNRM} appearance="primary">
+						Ok
+					</Button>
+					<Button onClick={handleCloseNRM} appearance="subtle">
 						Cancel
 					</Button>
 				</Modal.Footer>

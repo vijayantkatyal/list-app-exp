@@ -45,7 +45,7 @@
 [Done] split domain (comma instead of space)
 > split by max 10 lists or count
 
-> add record
+[Done] add record
 [Done] edit record
 [Done] delete
 [Done] (multiple) select for delete
