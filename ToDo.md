@@ -46,8 +46,8 @@
 > split by max 10 lists or count
 
 > add record
-> edit record
-> delete
+[Done] edit record
+[Done] delete
 
 > (multiple) select for delete
 

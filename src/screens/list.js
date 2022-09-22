@@ -5,8 +5,58 @@ import { filter } from 'lodash';
 import GearIcon from '@rsuite/icons/Gear';
 import * as Papa from "papaparse";
 import { HotKeys } from "react-hotkeys";
+import TrashIcon from '@rsuite/icons/Trash';
 
 const { Column, HeaderCell, Cell } = Table;
+
+const EditableCell = ({ rowData, dataKey, onChange, ...props }) => {
+	const editing = rowData.status === 'EDIT';
+	return (
+		<Cell {...props} className={editing ? 'table-content-editing' : ''}>
+		{editing ? (
+			<input
+			className="rs-input"
+			defaultValue={rowData[dataKey]}
+			onChange={event => {
+				onChange && onChange(rowData.id, dataKey, event.target.value);
+			}}
+			/>
+		) : (
+			<span className="table-content-edit-span">{rowData[dataKey]}</span>
+		)}
+		</Cell>
+	);
+};
+
+const ActionCell = ({ rowData, dataKey, onClick, ...props }) => {
+	return (
+		<Cell {...props} style={{ padding: '6px' }}>
+		<Button
+			appearance="link"
+			onClick={() => {
+			onClick(rowData.id);
+			}}
+		>
+			{rowData.status === 'EDIT' ? 'Save' : 'Edit'}
+		</Button>
+		</Cell>
+	);
+};
+
+const DeleteCell = ({ rowData, dataKey, onClick, ...props }) => {
+	return (
+		<Cell {...props} style={{ padding: '6px' }}>
+			<IconButton
+				icon={<TrashIcon/>}
+				appearance="link"
+				color="red"
+				onClick={() => {
+					onClick(rowData.id);
+				}}
+			/>
+		</Cell>
+	);
+};
 
 export default function CategoryPage() {
 	let { id } = useParams();
@@ -520,7 +570,58 @@ export default function CategoryPage() {
 		SEARCH: () => {
 			search_containerRef.current.focus();
 		}
-	}
+	};
+
+	const handleChangeRow = (id, key, value) => {
+		const nextData = Object.assign([], data);
+		nextData.find(item => item.id === id)[key] = value;
+		setData(nextData);
+	};
+
+	async function handleEditState(rid) {
+		const nextData = Object.assign([], data);
+		const activeItem = nextData.find(item => item.id === rid);
+
+		if(activeItem.status)
+		{
+			var _new_data = activeItem;
+			
+			// save to database
+			var _req = {
+				"query": "edit_row",
+				"table_name": id,
+				"row_id": rid,
+				"first_name": _new_data.first_name,
+				"last_name": _new_data.last_name,
+				"email": _new_data.email
+			};
+			var _res = await ipcRenderer.sendSync('message', _req);
+		}
+
+		activeItem.status = activeItem.status ? null : 'EDIT';
+		setData(nextData);
+	};
+
+	async function deleteRow(rid) {
+		var result = window.confirm("Sure, Want to delete this row?");
+		if (result) {
+			console.log(rid);
+
+			var _req = {
+				"query": "delete_row",
+				"table_name": id,
+				"row_id": rid
+			};
+			var _res = await ipcRenderer.sendSync('message', _req);
+
+			const nextData = Object.assign([], data);
+			// nextData.find(item => item.id === id)[key] = value;
+			nextData.splice(nextData.findIndex(function(i){
+				return i.id == rid;
+			}), 1);
+			setData(nextData);
+		}
+	};
 
 	return (
 		<HotKeys keyMap={keyMap} handlers={handlers}>
@@ -566,9 +667,17 @@ export default function CategoryPage() {
 					{columns?.map((column, index) => (
 						<Column width={column[0] == "email" || column[0] == "Email" ? 350 : 100} flexGrow={column[0] == "email" || column[0] == "Email" ? 2 : 1} sortable>
 							<HeaderCell>{column[0]}</HeaderCell>
-							<Cell dataKey={column[0]} />
+							{column[0] != "id" ? <EditableCell dataKey={column[0]} onChange={handleChangeRow} /> : <Cell dataKey={column[0]} />}
 						</Column>
 					))}
+					<Column flexGrow={1}>
+						<HeaderCell></HeaderCell>
+						<ActionCell dataKey="id" onClick={handleEditState} />
+					</Column>
+					<Column flexGrow={1}>
+						<HeaderCell></HeaderCell>
+						<DeleteCell dataKey="id" onClick={deleteRow} />
+					</Column>
 				</Table>
 			</div>
 			<div style={{ padding: 20 }}>

@@ -371,6 +371,24 @@ ipcMain.on("message", (event, data) => {
 			});
 		});
 	}
+
+	if(data.query == "delete_row")
+	{
+		database(data.table_name).where('id', data.row_id).delete().then(function(res){
+			event.returnValue = "done";
+		});
+	}
+
+	if(data.query == "edit_row")
+	{
+		database(data.table_name).where('id', data.row_id).update({
+			'first_name': data.first_name,
+			'last_name': data.last_name,
+			'email': data.email,
+		}).then(function(res){
+			event.returnValue = "done";
+		});
+	}
 });
 
 // The code above has been adapted from a starter example in the Electron docs:
