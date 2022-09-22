@@ -42,8 +42,8 @@
 [Done] by default email search
 [Done] ctl + f keyboard search shortcut
 [Done] email filter check (with comma seaparated list)
+[Done] split domain (comma instead of space)
 > split by max 10 lists or count
-> split domain (comma instead of space)
 
 > add record
 > edit record

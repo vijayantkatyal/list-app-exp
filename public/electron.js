@@ -342,6 +342,8 @@ ipcMain.on("message", (event, data) => {
 	{
 		var domains = data.domains;
 
+		domains = domains.split(",");
+
 		var _done = 0;
 
 		domains.forEach((domain, index) => {

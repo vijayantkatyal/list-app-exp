@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState, useRef } from 'react';
-import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton, Modal, Placeholder, Button, CheckPicker, Checkbox } from 'rsuite';
+import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton, Modal, Placeholder, Button, CheckPicker, Checkbox, TagInput } from 'rsuite';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { filter } from 'lodash';
 import GearIcon from '@rsuite/icons/Gear';
@@ -54,7 +54,7 @@ export default function CategoryPage() {
 	const [valueTHREE, setValueTHREE] = useState([]);
 
 	const picker_FOUR = useRef();
-	const [valueFOUR, setValueFOUR] = useState([]);
+	const [valueFOUR, setValueFOUR] = useState(null);
 
 	const handleChange = value => {
 		setValue(value);
@@ -66,10 +66,6 @@ export default function CategoryPage() {
 
 	const handleChangeTHREE = value => {
 		setValueTHREE(value);
-	};
-
-	const handleChangeFOUR = value => {
-		setValueFOUR(value);
 	};
 
 	const handleCheckAll = (value, checked) => {
@@ -84,14 +80,9 @@ export default function CategoryPage() {
 		setValueTHREE(checked ? lists_THREE : []);
 	};
 
-	const handleCheckAllFOUR = (value, checked) => {
-		setValueFOUR(checked ? lists_FOUR : []);
-	};
-
 	const [lists, setLists] = useState([]);
 	const [lists_TWO, setLists_TWO] = useState([]);
 	const [lists_THREE, setLists_THREE] = useState([]);
-	const [lists_FOUR, setLists_FOUR] = useState(["gmail", "yahoo", "outlook", "hotmail", "yopmail"]);
 
 	const listsData = lists?.filter(i => i[0] != "id").map(
 		item => ({ label: item, value: item })
@@ -104,11 +95,6 @@ export default function CategoryPage() {
 	const listsData_THREE = lists_THREE?.filter(i => i[0] != "id").map(
 		item => ({ label: item, value: item })
 	);
-
-	const listsData_FOUR = lists_FOUR?.map(
-		item => ({ label: item, value: item })
-	);
-
 
 	const footerStyles = {
 		padding: '10px 2px',
@@ -506,7 +492,7 @@ export default function CategoryPage() {
 	}
 
 	async function handleSubmitSBE() {
-		if(valueFOUR.length > 0)
+		if(valueFOUR != "" && valueFOUR != null)
 		{
 			// send all list names
 			// get lists names
@@ -808,37 +794,7 @@ export default function CategoryPage() {
 					<Modal.Title>Split Lists by Email</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<CheckPicker
-						block={true}
-						data={listsData_FOUR}
-						placeholder="Select Domains"
-						ref={picker_FOUR}
-						value={valueFOUR}
-						onChange={handleChangeFOUR}
-						renderExtraFooter={() => (
-						<div style={footerStyles}>
-							<Checkbox
-								inline
-								indeterminate={valueFOUR.length > 0 && valueFOUR.length < lists_FOUR.length}
-								checked={valueFOUR.length === lists_FOUR.length}
-								onChange={handleCheckAllFOUR}
-							>
-								Check all
-							</Checkbox>
-
-							<Button
-								style={footerButtonStyle}
-								appearance="primary"
-								size="sm"
-								onClick={() => {
-									picker_FOUR.current.close();
-								}}
-							>
-							Ok
-							</Button>
-						</div>
-						)}
-					/>
+					<Input placeholder="@gmail, @outlook" value={valueFOUR} onChange={setValueFOUR} />
 				</Modal.Body>
 				<Modal.Footer>
 					<Button onClick={handleSubmitSBE} appearance="primary">
