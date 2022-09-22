@@ -38,8 +38,9 @@
 [Updates]
 
 [Done] 100, 500, 1000, 5000 pagination
-> csv no header support
-> by default email search (ctl + f)
+[x] csv no header support (can be supported but different upload flow is required)
+[Done] by default email search
+> ctl + f keyboard search shortcut
 > split by max 10 lists or count
 > split domain (comma instead of space)
 > email filter check

@@ -14,7 +14,7 @@ export default function CategoryPage() {
 
 	const { ipcRenderer } = window;
 
-	const [filterColumn, setFilterColumn] = useState(null);
+	const [filterColumn, setFilterColumn] = useState('email');
 	const [filterText, setFilterText] = useState(null);
 
 	const [sortColumn, setSortColumn] = useState();
@@ -250,7 +250,7 @@ export default function CategoryPage() {
 		setLimit(100);
 		setPage(1);
 		setFilterText(null);
-		setFilterColumn(null);
+		setFilterColumn('email');
 
 		getColumns();
 		fetchData();
