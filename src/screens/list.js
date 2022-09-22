@@ -9,6 +9,19 @@ import TrashIcon from '@rsuite/icons/Trash';
 
 const { Column, HeaderCell, Cell } = Table;
 
+const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
+	<Cell {...props} style={{ padding: 0 }}>
+		<div style={{ lineHeight: '46px' }}>
+		<Checkbox
+			value={rowData[dataKey]}
+			inline
+			onChange={onChange}
+			checked={checkedKeys.some(item => item === rowData[dataKey])}
+		/>
+		</div>
+	</Cell>
+);
+
 const EditableCell = ({ rowData, dataKey, onChange, ...props }) => {
 	const editing = rowData.status === 'EDIT';
 	return (
@@ -62,6 +75,8 @@ export default function CategoryPage() {
 	let { id } = useParams();
 	const navigate = useNavigate();
 
+	const [checkedKeys, setCheckedKeys] = useState([]);
+
 	const { ipcRenderer } = window;
 
 	const [filterColumn, setFilterColumn] = useState('email');
@@ -105,6 +120,26 @@ export default function CategoryPage() {
 
 	const picker_FOUR = useRef();
 	const [valueFOUR, setValueFOUR] = useState(null);
+
+	let checked = false;
+	let indeterminate = false;
+
+	if (checkedKeys.length === data?.length) {
+		checked = true;
+	} else if (checkedKeys.length === 0) {
+		checked = false;
+	} else if (checkedKeys.length > 0 && checkedKeys.length < data?.length) {
+		indeterminate = true;
+	}
+
+	const handleCheckAllRows = (value, checked) => {
+	const keys = checked ? data?.map(item => item.id) : [];
+		setCheckedKeys(keys);
+	};
+	const handleCheck = (value, checked) => {
+	const keys = checked ? [...checkedKeys, value] : checkedKeys.filter(item => item !== value);
+		setCheckedKeys(keys);
+	};
 
 	const handleChange = value => {
 		setValue(value);
@@ -291,6 +326,8 @@ export default function CategoryPage() {
 
 		getColumns();
 		fetchData();
+
+		setCheckedKeys([]);
 
 		search_containerRef.current.focus();
 	}, [id]);
@@ -623,6 +660,33 @@ export default function CategoryPage() {
 		}
 	};
 
+	async function deleteSelectedRows() {
+		var result = window.confirm("Sure, Want to delete these rows?");
+		if(result)
+		{
+			var _ids = checkedKeys;
+
+			var _req = {
+				"query": "delete_rows",
+				"table_name": id,
+				"row_ids": _ids
+			};
+
+			var _res = await ipcRenderer.sendSync('message', _req);
+
+			const nextData = Object.assign([], data);
+			
+			_ids.forEach(function(rid, index){
+				nextData.splice(nextData.findIndex(function(i){
+					return i.id == rid;
+				}), 1);
+			});
+
+			setData(nextData);
+			
+		}
+	}
+
 	return (
 		<HotKeys keyMap={keyMap} handlers={handlers}>
 		<div>
@@ -653,6 +717,8 @@ export default function CategoryPage() {
 								<Dropdown.Item divider />
 								<Dropdown.Item onSelect={deleteList} style={{ color: 'red' }}>Delete</Dropdown.Item>
 							</Dropdown>
+
+							{checkedKeys.length > 0 ? <Button appearance="ghost" color="red" style={{ marginLeft: '5px' }} onClick={deleteSelectedRows}>Delete Selected</Button>: null}
 						</h3>
 					</FlexboxGrid.Item>
 					<FlexboxGrid.Item colspan={12} style={{ textAlign: 'end' }}>
@@ -664,6 +730,19 @@ export default function CategoryPage() {
 			<hr />
 			<div style={{ height: "calc(100vh - 170px)" }}>
 				<Table data={getData()} autoHeight={false} fillHeight={true} virtualized loading={loading} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn}>
+					<Column width={50} align="center">
+						<HeaderCell style={{ padding: 0 }}>
+							<div style={{ lineHeight: '40px' }}>
+							<Checkbox
+								inline
+								checked={checked}
+								indeterminate={indeterminate}
+								onChange={handleCheckAllRows}
+							/>
+							</div>
+						</HeaderCell>
+						<CheckCell dataKey="id" checkedKeys={checkedKeys} onChange={handleCheck} />
+					</Column>
 					{columns?.map((column, index) => (
 						<Column width={column[0] == "email" || column[0] == "Email" ? 350 : 100} flexGrow={column[0] == "email" || column[0] == "Email" ? 2 : 1} sortable>
 							<HeaderCell>{column[0]}</HeaderCell>

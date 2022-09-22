@@ -48,8 +48,7 @@
 > add record
 [Done] edit record
 [Done] delete
-
-> (multiple) select for delete
+[Done] (multiple) select for delete
 
 > gmail duplicate check
 
