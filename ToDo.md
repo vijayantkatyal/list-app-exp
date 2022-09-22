@@ -35,10 +35,22 @@
 [Fixed] map columns to first name, last name and email (to avoid mapping during ops) (means fixed columns, instead of dynamic)
 - clear state when list changes
 
-[Later]
+[Updates]
 
-[?] clear list
-[?] delete row
-[?] repair domains (email)
-- split list by count (e.g. 1000)
-- split list by domain (e.g. gmail)
+[Done] 100, 500, 1000, 5000 pagination
+> csv no header support
+> by default email search (ctl + f)
+> split by max 10 lists or count
+> split domain (comma instead of space)
+> email filter check
+
+> add record
+> edit record
+> delete
+
+> (multiple) select for delete
+
+> gmail duplicate check
+
+> add progress bar (on actions)
+> style update to blue

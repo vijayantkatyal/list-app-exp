@@ -24,7 +24,7 @@ export default function CategoryPage() {
 	const [columns, setColumns] = useState([]);
 	const [data, setData] = useState([]);
 
-	const [limit, setLimit] = useState(50);
+	const [limit, setLimit] = useState(100);
 	const [page, setPage] = useState(1);
 	const [totalLength, setTotalLength] = useState(0);
 
@@ -247,7 +247,7 @@ export default function CategoryPage() {
 
 	useEffect(() => {
 
-		setLimit(50);
+		setLimit(100);
 		setPage(1);
 		setFilterText(null);
 		setFilterColumn(null);
@@ -583,7 +583,7 @@ export default function CategoryPage() {
 					size="xs"
 					layout={['total', '-', 'limit', '|', 'pager', 'skip']}
 					total={totalLength}
-					limitOptions={[50, 100, 150]}
+					limitOptions={[100, 500, 1000, 5000]}
 					limit={limit}
 					activePage={page}
 					onChangePage={setPage}
