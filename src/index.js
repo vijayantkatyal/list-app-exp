@@ -1,7 +1,8 @@
 import React from 'react';
 // import ReactDOM from 'react-dom';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
+import { BrowserRouter, Link, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-loading";
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -21,13 +22,13 @@ root.render(
 					<React.Suspense fallback={<>...</>}>
 						<ListPage/>
 					</React.Suspense>
-				} />
+				} loading/>
 
 				<Route path="info" element={
 					<React.Suspense fallback={<>...</>}>
 						<Overview/>
 					</React.Suspense>
-				} />
+				} loading/>
 			</Route>
 		</Routes>
 	</BrowserRouter>

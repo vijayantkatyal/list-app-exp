@@ -8,6 +8,8 @@ import PageIcon from '@rsuite/icons/Page';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 
+import { useLoadingContext } from "react-router-loading";
+
 import { Link, useNavigate } from "react-router-dom";
 
 import * as Papa from "papaparse";
@@ -24,6 +26,7 @@ function classNames(...classes) {
 
 function App() {
 
+	const loadingContext = useLoadingContext();
 	const { ipcRenderer } = window;
 	const [lists, setLists] = useState([]);
 	const [activeKey, setActiveKey] = useState(null);
@@ -52,6 +55,7 @@ function App() {
 		};
 		var _res = await ipcRenderer.sendSync('message', _req);
 		setLists(_res);
+		loadingContext.done();
 	}
 
 	// async function addNewTable() {

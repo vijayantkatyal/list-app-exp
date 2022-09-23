@@ -16,6 +16,7 @@
     "react-dom": "^18.2.0",
     "react-hotkeys": "^2.0.0",
     "react-router-dom": "^6.3.0",
+    "react-router-loading": "^1.0.0",
     "react-scripts": "5.0.1",
     "rsuite": "^5.16.6",
     "simplebar-react": "^2.4.1",
