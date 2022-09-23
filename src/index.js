@@ -1,7 +1,7 @@
 import React from 'react';
 // import ReactDOM from 'react-dom';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Link, useLocation, Navigate } from "react-router-dom";
+import { BrowserRouter, HashRouter, Link, useLocation, Navigate } from "react-router-dom";
 import { Routes, Route } from "react-router-loading";
 import './index.css';
 import App from './App';
@@ -14,24 +14,24 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-	<BrowserRouter>
+	<HashRouter>
     	<Routes>
-			<Route path="/" element={<App/>}>
+			<Route exact path="/" element={<App/>}>
 				
-				<Route index path="list/:id" element={
+				<Route index exact path="/list/:id" element={
 					<React.Suspense fallback={<>...</>}>
 						<ListPage/>
 					</React.Suspense>
 				} loading/>
 
-				<Route path="info" element={
+				<Route exact path="/info" element={
 					<React.Suspense fallback={<>...</>}>
 						<Overview/>
 					</React.Suspense>
 				} loading/>
 			</Route>
 		</Routes>
-	</BrowserRouter>
+	</HashRouter>
   </React.StrictMode>);
 
 // If you want to start measuring performance in your app, pass a function

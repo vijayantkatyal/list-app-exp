@@ -1,2 +1,4 @@
 node_modules/
 data/mydb.sqlite
+build/
+dist/

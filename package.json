@@ -70,10 +70,14 @@
   "main": "./public/electron.js",
   "build": {
     "appId": "com.electron.my_app",
+	"asar": true,
+	"asarUnpack": "**\\*.{node,dll}",
     "productName": "My App",
     "files": [
+	  "dist/**/*",
       "build/**/*",
-      "node_modules/**/*"
+      "node_modules/**/*",
+	  "package.json"
     ],
     "directories": {
       "buildResources": "public"
@@ -88,7 +92,7 @@
       "icon": "./public/logo512.png"
     },
     "linux": {
-      "target": "deb",
+      "target": "AppImage",
       "category": "Development"
     }
   }
