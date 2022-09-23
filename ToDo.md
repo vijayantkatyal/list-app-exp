@@ -52,5 +52,5 @@
 
 > gmail duplicate check
 
-> add progress bar (on actions)
-> style update to blue
+[Done] add progress bar (on actions)
+[Done] style update to blue

@@ -80,7 +80,7 @@ app.on("activate", () => {
 const database = require('knex')({
 	client: 'better-sqlite3', // or 'better-sqlite3'
 	connection: {
-		filename: "./public/mydb.sqlite"
+		filename: "./data/mydb.sqlite"
 	},
 	useNullAsDefault: true,
 	debug: false
