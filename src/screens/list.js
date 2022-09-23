@@ -106,9 +106,15 @@ export default function CategoryPage() {
 		first_name: "",
 		last_name: "",
 		email: ""
-	}
+	};
+
+	const initLFormValue = {
+		list_type: "",
+		list_type_number: ""
+	};
 
 	const [nRFormValue, setNRFormValue] = useState(initNRFormValue);
+	const [lFormValue, setLFormValue] = useState(initLFormValue);
 
 	const [rdeInput, setRdeInput] = useState(null);
 	const [openRDE, setOpenRDE] = useState(false);
@@ -118,6 +124,10 @@ export default function CategoryPage() {
 	const [openSBE, setOpenSBE] = useState(false);
   	const handleOpenSBE = () => setOpenSBE(true);
   	const handleCloseSBE = () => setOpenSBE(false);
+
+	const [openSBC, setOpenSBC] = useState(false);
+  	const handleOpenSBC = () => setOpenSBC(true);
+  	const handleCloseSBC = () => setOpenSBC(false);
 
 	const search_containerRef = useRef();
 	
@@ -236,6 +246,22 @@ export default function CategoryPage() {
 	const [openUL, setOpenUL] = useState(false);
 	const handleOpenUL = () => setOpenUL(true);
 	const handleCloseUL = () => setOpenUL(false);
+
+	const listTypeData = [
+		{
+			label: 'By Records Count',
+			value: 'by_record_count'
+		},
+		{
+			label: 'By No. of Lists',
+			value: 'by_number_of_lists'
+		}
+	].map(
+		item => ({
+			label: item.label,
+			value: item.value
+		})
+	);
 
 
 	// const data = defaultData.filter((v, i) => {
@@ -590,6 +616,33 @@ export default function CategoryPage() {
 		handleOpenSBE();
 	}
 
+	function splitListByCount() {
+		handleOpenSBC();
+	}
+
+	async function handleSubmitSBC() {
+
+		if(lFormValue.list_type != null && lFormValue.list_type != "" && lFormValue.list_type_number != null && lFormValue.list_type_number != "" && isNaN(lFormValue.list_type_number) == false)
+		{
+			console.log(lFormValue);
+
+			var _req = {
+				"query": "split_tables",
+				"main_table": id,
+				"type": lFormValue.list_type,
+				"number": lFormValue.list_type_number
+			};
+			var _res = await ipcRenderer.sendSync('message', _req);
+			console.log(_res);
+
+			handleCloseSBC();
+		}
+		else
+		{
+			alert("select list type and valid number");
+		}
+	}
+
 	async function handleSubmitSBE() {
 		if(valueFOUR != "" && valueFOUR != null)
 		{
@@ -753,7 +806,7 @@ export default function CategoryPage() {
 									<Dropdown.Item onSelect={uniqueList}>Unique</Dropdown.Item>
 								</Dropdown.Menu>
 								<Dropdown.Menu title="Split">
-									<Dropdown.Item disabled>By Count (1000)</Dropdown.Item>
+									<Dropdown.Item onSelect={splitListByCount}>By Count (1000)</Dropdown.Item>
 									<Dropdown.Item onSelect={splitListByDomain}>Domain</Dropdown.Item>
 								</Dropdown.Menu>
 								<Dropdown.Item divider />
@@ -1031,6 +1084,35 @@ export default function CategoryPage() {
 						Ok
 					</Button>
 					<Button onClick={handleCloseSBE} appearance="subtle">
+						Cancel
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Modal open={openSBC} onClose={handleCloseSBC} backdrop="static">
+				<Modal.Header>
+					<Modal.Title>Split Lists by Count</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					
+					<Form fluid formValue={lFormValue} onChange={lFormValue => setLFormValue(lFormValue)}>
+						<Form.Group controlId="list_type">
+							<Form.ControlLabel>List Type</Form.ControlLabel>
+							<Form.Control name="list_type" data={listTypeData} searchable={false} block accepter={SelectPicker} placeholder="Divide List By" />
+						</Form.Group>
+
+						<Form.Group controlId="list_type_number">
+							<Form.ControlLabel>No. of Records / Lists</Form.ControlLabel>
+							<Form.Control name="list_type_number" required/>
+						</Form.Group>
+					</Form>
+
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={handleSubmitSBC} appearance="primary">
+						Ok
+					</Button>
+					<Button onClick={handleCloseSBC} appearance="subtle">
 						Cancel
 					</Button>
 				</Modal.Footer>

@@ -372,6 +372,108 @@ ipcMain.on("message", (event, data) => {
 		});
 	}
 
+	if(data.query == "split_tables")
+	{
+		if(data.type == "by_record_count")
+		{
+			// split by number of records
+			database(data.main_table).count({count: '*'}).then(function(count_res){
+				var _count = count_res[0].count;
+
+				var _offset_array = [];
+
+				// 40,000 / 10000 = 4
+				var _upper_offset_counts = Math.ceil(_count / data.number) + 1;
+
+				for (let index = 0; index < _upper_offset_counts; index++) {
+					// const element = array[index];
+					var _tmp_offset = index * data.number;
+					_offset_array.push(_tmp_offset);
+				}
+
+				var _done = 0;
+
+				_offset_array.forEach(function(_tmp_offset_item, index){
+					database.select("*").from(data.main_table).orderBy('id').limit(data.number).offset(_tmp_offset_item).then(function(table_data){
+					 	// create table with data
+						 var _n_table_name = data.main_table + "_list_"+ index;
+
+						database.schema.createTable(_n_table_name, t => {
+							t.increments('id').primary();
+							t.string("first_name", 100);
+							t.string("last_name", 100);
+							t.string("email", 100);
+						}).then(function(res) {
+				
+							database.batchInsert(_n_table_name, table_data, 500).then(function(){
+								_done += 1;
+
+								if(_offset_array.length == _done)
+								{
+									event.returnValue = "done";
+								}
+							});
+
+						});
+					});
+				});
+
+			});
+		}
+
+		if(data.type == "by_number_of_lists")
+		{
+			// get total count
+			database(data.main_table).count({count: '*'}).then(function(count_res){
+				var _count = count_res[0].count;
+				
+				// calculate lists
+				// 40,000 / 10 = 4000
+
+				var _limit = Math.ceil(_count / data.number);
+
+				var _offset_array = [];
+
+				// 40,000 / 10000 = 4
+				var _upper_offset_counts = Math.ceil(_count / _limit);
+
+				for (let index = 0; index < _upper_offset_counts; index++) {
+					// const element = array[index];
+					var _tmp_offset = index * _limit;
+					_offset_array.push(_tmp_offset);
+				}
+
+				var _done = 0;
+
+				_offset_array.forEach(function(_tmp_offset_item, index){
+					database.select("*").from(data.main_table).orderBy('id').limit(_limit).offset(_tmp_offset_item).then(function(table_data){
+					 	// create table with data
+						 var _n_table_name = data.main_table + "_list_"+ index;
+
+						database.schema.createTable(_n_table_name, t => {
+							t.increments('id').primary();
+							t.string("first_name", 100);
+							t.string("last_name", 100);
+							t.string("email", 100);
+						}).then(function(res) {
+				
+							database.batchInsert(_n_table_name, table_data, 500).then(function(){
+								_done += 1;
+
+								if(_offset_array.length == _done)
+								{
+									event.returnValue = "done";
+								}
+							});
+
+						});
+					});
+				});
+
+			});
+		}
+	}
+
 	if(data.query == "delete_row")
 	{
 		database(data.table_name).where('id', data.row_id).delete().then(function(res){

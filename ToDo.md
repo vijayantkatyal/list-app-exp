@@ -43,7 +43,7 @@
 [Done] ctl + f keyboard search shortcut
 [Done] email filter check (with comma seaparated list)
 [Done] split domain (comma instead of space)
-> split by max 10 lists or count
+[Done] split by max 10 lists or count
 
 [Done] add record
 [Done] edit record
