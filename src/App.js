@@ -198,17 +198,17 @@ function App() {
 							<SimpleBar style={{ maxHeight: 'cal(100vh - 170px)' }}>
 							{lists?.map((list, index) => (
 								<Nav.Item
-									eventKey={list.name} icon={<TableIcon />}
+									eventKey={list.name}
 									key={index}
 									className={
 										classNames(
-											activeKey == list.id ? 'active' : null,
+											activeKey != null && activeKey == list.id ? 'active' : null,
 											'nav-item'
 										)
 									}
 									onClick={() => navigate("/list/" + list.name)}
 								>
-									{list.name}
+									# {list.name}
 								</Nav.Item>
 							))}
 							</SimpleBar>
@@ -232,8 +232,6 @@ function App() {
 				</div> : null}
 
 				{activeKey != "add_new" ? <Outlet /> : null}
-
-				{activeKey == null ? <div>Welcome</div> : null}
 			</Container>
 
 			<Modal open={openModal} onClose={handleCloseModal} backdrop="static">

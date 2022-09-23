@@ -1,3 +1,7 @@
+:root{
+	--rs-sidenav-subtle-selected-text: green;
+}
+
 .sidebarContainer {
 	padding: 5px;
 }
@@ -11,11 +15,11 @@
 }
 
 .sidebarContainer .nav-item:hover, .sidebarContainer .nav-item:hover a {
-	color: red;
+	color: green;
 }
 
 .sidebarContainer .nav-item.active, .sidebarContainer .nav-item.active a {
-	color: red;
+	color: green;
 }
 
 .mainContainer {
