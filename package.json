@@ -39,7 +39,7 @@
     "db": "node db.js",
     "electron": "concurrently -k \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron . --no-sandbox --enable-logging\"",
     "rebuild": "electron-rebuild",
-	"release": "electron-builder --publish always"
+	"release": "electron-builder --publish always -c.extraMetadata.main=build/electron.js"
   },
   "eslintConfig": {
     "extends": [
