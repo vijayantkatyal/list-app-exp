@@ -74,6 +74,9 @@
     "appId": "com.electron.my_app",
 	"asar": true,
 	"extends": null,
+	"extraMetadata": {
+		"main": "build/electron.js"
+	},
 	"asarUnpack": "**\\*.{node,dll}",
     "productName": "My App",
     "files": [
