@@ -73,6 +73,7 @@
   "build": {
     "appId": "com.electron.my_app",
 	"asar": true,
+	"extends": null,
 	"asarUnpack": "**\\*.{node,dll}",
     "productName": "My App",
     "files": [
