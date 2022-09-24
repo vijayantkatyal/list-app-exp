@@ -31,13 +31,15 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+	"dist": "npm run build && electron-builder -c.extraMetadata.main=build/electron.js",
     "dist:win": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js",
     "dist:mac": "npm run build && electron-builder -m -c.extraMetadata.main=build/electron.js",
     "dist:linux": "npm run build && electron-builder -l -c.extraMetadata.main=build/electron.js",
     "react-start": "react-scripts start",
     "db": "node db.js",
     "electron": "concurrently -k \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron . --no-sandbox --enable-logging\"",
-    "rebuild": "electron-rebuild"
+    "rebuild": "electron-rebuild",
+	"release": "electron-builder --publish always"
   },
   "eslintConfig": {
     "extends": [
@@ -87,6 +89,21 @@
       "category": "utilities",
       "type": "development"
     },
+	"dmg": {
+		"contents": [
+			{
+			"x": 110,
+			"y": 150
+			},
+			{
+			"x": 440,
+			"y": 150,
+			"type": "link",
+			"path": "/Applications"
+			}
+		],
+		"artifactName": "electron-circleci-${version}.${ext}"
+	},
     "win": {
       "target": "nsis",
       "icon": "./public/logo512.png"
@@ -94,6 +111,12 @@
     "linux": {
       "target": "AppImage",
       "category": "Development"
-    }
+    },
+	"publish": [
+		{
+		  "provider": "github",
+		  "releaseType": "release"
+		}
+	]
   }
 }
