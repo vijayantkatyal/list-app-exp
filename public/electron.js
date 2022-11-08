@@ -77,10 +77,20 @@ app.on("activate", () => {
   }
 });
 
+// var _path = path.join(process.env.APPDATA, "/data/mydb.sqlite");
+
+
+
+// var _path = path.join(__dirname, "mydb.sqlite");
+
+var _path = path.join(app.getPath('userData'), 'jetsetter-items.sqlite');
+console.log("PATH: "+ _path);
+
 const database = require('knex')({
 	client: 'better-sqlite3', // or 'better-sqlite3'
 	connection: {
-		filename: "./data/mydb.sqlite"
+		// filename: "./data/mydb.sqlite"
+		filename: _path
 	},
 	useNullAsDefault: true,
 	debug: false
