@@ -216,7 +216,7 @@ function App() {
 								</Nav.Item>
 							))}
 							</SimpleBar>
-							{lists.length > 0 ?
+							{lists?.length > 0 ?
 								<Nav.Item divider style={{ borderTop: '1px solid #ddd' }} /> : null}
 							<Nav.Item eventKey="add_new" icon={<PlusIcon />}>
 								Add
