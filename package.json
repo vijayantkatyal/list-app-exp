@@ -105,7 +105,8 @@
 			"path": "/Applications"
 			}
 		],
-		"artifactName": "electron-circleci-${version}.${ext}"
+		"artifactName": "electron-circleci-${version}.${ext}",
+		"publish": null
 	},
     "win": {
       "target": "nsis",
