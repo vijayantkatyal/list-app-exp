@@ -6,6 +6,7 @@ jobs:
     steps:
       - checkout
       - run: sudo npm install -g npm
+      - run: npm cache clean --force
       - run: npm install
       - run: npm run rebuild
       - run: npm run dist:mac
