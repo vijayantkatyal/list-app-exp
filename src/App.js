@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Container, Header, Sidebar, Sidenav, Content, Navbar, Nav, Button, Uploader, Modal, Input, Form, Checkbox, CheckboxGroup, Schema, SelectPicker } from 'rsuite';
 import ListIcon from '@rsuite/icons/List';
 import PlusIcon from '@rsuite/icons/Plus';
+import ReloadIcon from '@rsuite/icons/Reload';
 import TableIcon from '@rsuite/icons/Table';
 import PageIcon from '@rsuite/icons/Page';
 import SimpleBar from 'simplebar-react';
@@ -56,6 +57,8 @@ function App() {
 		var _res = await ipcRenderer.sendSync('message', _req);
 		setLists(_res);
 		loadingContext.done();
+
+		alert("Lists Refreshed");
 	}
 
 	// async function addNewTable() {
@@ -158,9 +161,17 @@ function App() {
 
 					// console.log(_new_array);
 
+					var _list_name = formValue.list_name;
+
+					_list_name.replace(" ", "_");
+					_list_name.replace(".", "_");
+					_list_name.replace("+", "_");
+					_list_name.replace("@", "_");
+					_list_name.replace("!", "_");
+
 					var _req = {
 						"query": "insert_new_table",
-						"table_name": formValue.list_name,
+						"table_name": _list_name,
 						"columns": ["first_name", "last_name", "email"],
 						"data": _new_array
 					};
@@ -199,7 +210,7 @@ function App() {
 				<Sidenav expanded={true} defaultOpenKeys={['3']} appearance="subtle">
 					<Sidenav.Body>
 						<Nav activeKey={activeKey} onSelect={setActiveKey}>
-							<SimpleBar style={{ maxHeight: 'cal(100vh - 170px)' }}>
+							<SimpleBar style={{ maxHeight: 'cal(90vh - 170px)' }}>
 							{lists?.map((list, index) => (
 								<Nav.Item
 									eventKey={list.name}
@@ -216,6 +227,10 @@ function App() {
 								</Nav.Item>
 							))}
 							</SimpleBar>
+							<Nav.Item divider style={{ borderTop: '1px solid #ddd' }} />
+							<Nav.Item icon={<ReloadIcon />} onClick={getAllLists}>
+								Refresh
+							</Nav.Item>
 							{lists?.length > 0 ?
 								<Nav.Item divider style={{ borderTop: '1px solid #ddd' }} /> : null}
 							<Nav.Item eventKey="add_new" icon={<PlusIcon />}>
