@@ -7,14 +7,9 @@ jobs:
       - checkout
       - run: sudo npm install -g npm
       - run: npm cache clean --force
-      - run: npm install
+      - run: npm install --no-package-lock
       - run: npm run rebuild
       - run: npm run dist:mac
-
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - ./node_modules
 
       - store_artifacts:
           path: /Users/distiller/.npm/_logs/
