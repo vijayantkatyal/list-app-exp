@@ -16,10 +16,10 @@ jobs:
             - ./node_modules
 
       - store_artifacts:
-          path: ~/repo/out/make
+          path: /Users/distiller/.npm/_logs/
 
       - store_test_results:
-          path: /tmp
+          path: /Users/distiller/.npm/_logs/
 
 workflows:
   version: 2
