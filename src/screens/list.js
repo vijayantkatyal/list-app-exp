@@ -948,10 +948,10 @@ export default function CategoryPage() {
 								<Dropdown.Item onSelect={exportList}>Export (CSV)</Dropdown.Item>
 								<Dropdown.Item divider />
 								<Dropdown.Menu title="Repair">
-									<Dropdown.Item>Validate Emails</Dropdown.Item>
-									<Dropdown.Item onSelect={removeDuplicates}>Remove Duplicates</Dropdown.Item>
-									<Dropdown.Item onSelect={removeEmailsFilter}>Remove Emails (Filter)</Dropdown.Item>
 									<Dropdown.Item onSelect={removeMissingEmail}>Remove Null Data</Dropdown.Item>
+									<Dropdown.Item>Validate Emails</Dropdown.Item>
+									<Dropdown.Item onSelect={removeEmailsFilter}>Remove Emails (Filter)</Dropdown.Item>
+									<Dropdown.Item onSelect={removeDuplicates}>Remove Duplicates</Dropdown.Item>
 								</Dropdown.Menu>
 								<Dropdown.Menu title="Actions">
 									<Dropdown.Item onSelect={mergeLists}>Merge</Dropdown.Item>
@@ -1049,7 +1049,7 @@ export default function CategoryPage() {
 					<Modal.Title>Filter Emails</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<Input placeholder="junk, demo" value={rdeInput} onChange={setRdeInput} />
+					<Input placeholder="junk, spam" value={rdeInput} onChange={setRdeInput} />
 					list of words to filter
 					<br/>
 					<br/>

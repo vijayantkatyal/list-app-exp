@@ -241,18 +241,24 @@ function App() {
 							placement: 'bottomEnd'
 						});
 
-						// remove duplicates
-						var _dup_req = {
-							"query": "remove_duplicate_table",
-							"table_name": formValue.list_name
-						};
-						var _dup_res = await ipcRenderer.sendSync('message', _dup_req);
-						console.log(_dup_res);
-						// alert(_res);
-				
-						toaster.push(message("info", "list duplicated removed"), {
+						// validate
+						toaster.push(message("info", "list data ops: validate emails"), {
 							placement: 'bottomEnd'
 						});
+
+						// remove duplicates
+						// var _dup_req = {
+						// 	"query": "remove_duplicate_table",
+						// 	"table_name": formValue.list_name
+						// };
+						// var _dup_res = await ipcRenderer.sendSync('message', _dup_req);
+						// console.log(_dup_res);
+						// // alert(_res);
+				
+						// toaster.push(message("info", "list duplicated removed"), {
+						// 	placement: 'bottomEnd'
+						// });
+
 					}
 					else
 					{
