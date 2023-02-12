@@ -7,6 +7,8 @@ import * as Papa from "papaparse";
 import { HotKeys } from "react-hotkeys";
 import TrashIcon from '@rsuite/icons/Trash';
 
+import { Notification, useToaster } from 'rsuite';
+
 const { Column, HeaderCell, Cell } = Table;
 
 const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
@@ -72,6 +74,17 @@ const DeleteCell = ({ rowData, dataKey, onClick, ...props }) => {
 };
 
 export default function CategoryPage() {
+
+	function message(type, text) {
+		return (
+			<Notification type={type} header={type} closable>
+			<p>{text}</p>
+			</Notification>
+		);
+	};
+
+	const toaster = useToaster();
+
 	let { id } = useParams();
 	const navigate = useNavigate();
 
@@ -283,6 +296,11 @@ export default function CategoryPage() {
 
 	async function fetchData() {
 		console.log("loading data");
+
+		toaster.push(message("info", "loading data"), {
+			placement: 'bottomEnd'
+		});
+
 		var _req = {
 			"query": "get_table_data",
 			"table_name": id
@@ -352,6 +370,10 @@ export default function CategoryPage() {
 
 				setTotalLength(_dd.length);
 			}
+
+			toaster.push(message("info", "list data filtered"), {
+				placement: 'bottomEnd'
+			});
 		}
 	}, [filterText]);
 
@@ -368,6 +390,10 @@ export default function CategoryPage() {
 		setCheckedKeys([]);
 
 		search_containerRef.current.focus();
+
+		toaster.push(message("info", "fetching table data"), {
+			placement: 'bottomEnd'
+		});
 	}, [id]);
 
 	function renameList() {
@@ -378,17 +404,39 @@ export default function CategoryPage() {
 
 		if(rmInput != null && rmInput != "")
 		{
-			// //Logic to delete
-			var _req = {
-				"query": "rename_table",
-				"table_name": id,
-				"table_name_new": rmInput
-			};
-			var _res = await ipcRenderer.sendSync('message', _req);
-			// navigate to welcome / add list
-			handleCloseRM();
-			navigate("/list/"+rmInput);
-			setRmInput(null);
+
+			// check special characters, space, numbers
+			if(rmInput.includes(' '))
+			{
+				alert("Space not allowed in list name");
+			}
+			else if(/\d/.test(rmInput))
+			{
+				alert("no number allowed in list name");
+			}
+
+			else if(/[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]+/.test(rmInput))
+			{
+				alert("no special characters allowed");
+			}
+			else
+			{
+				// //Logic to delete
+				var _req = {
+					"query": "rename_table",
+					"table_name": id,
+					"table_name_new": rmInput
+				};
+				var _res = await ipcRenderer.sendSync('message', _req);
+				// navigate to welcome / add list
+				handleCloseRM();
+				navigate("/list/"+rmInput);
+				setRmInput(null);
+
+				toaster.push(message("info", "list renamed"), {
+					placement: 'bottomEnd'
+				});
+			}
 		}
 		else
 		{
@@ -406,6 +454,10 @@ export default function CategoryPage() {
 			};
 			var _res = await ipcRenderer.sendSync('message', _req);
 			alert(_res);
+
+			toaster.push(message("info", "list removed"), {
+				placement: 'bottomEnd'
+			});
 			// navigate to welcome / add list
 			navigate("/info");
 		}
@@ -446,6 +498,10 @@ export default function CategoryPage() {
 		var _res = await ipcRenderer.sendSync('message', _req);
 		console.log(_res);
 		// alert(_res);
+
+		toaster.push(message("info", "list duplicated removed"), {
+			placement: 'bottomEnd'
+		});
 	}
 
 	function removeEmailsFilter() {
@@ -464,6 +520,10 @@ export default function CategoryPage() {
 			var _res = await ipcRenderer.sendSync('message', _req);
 			console.log(_res);
 
+			toaster.push(message("info", "list data filtered"), {
+				placement: 'bottomEnd'
+			});
+
 			setRdeInput(null);
 		}
 		else
@@ -479,6 +539,10 @@ export default function CategoryPage() {
 		};
 		var _res = await ipcRenderer.sendSync('message', _req);
 		console.log(_res);
+
+		toaster.push(message("info", "removed missing emails from list"), {
+			placement: 'bottomEnd'
+		});
 	}
 
 	async function mergeLists() {
@@ -502,6 +566,10 @@ export default function CategoryPage() {
 		// show in checkboxes
 		// with select all option
 
+		toaster.push(message("info", "list merge done"), {
+			placement: 'bottomEnd'
+		});
+
 		handleOpenML();
 	}
 
@@ -509,17 +577,39 @@ export default function CategoryPage() {
 
 		if(listMName != null && listMName != "" && value.length > 1)
 		{
-			// send all list names
-			// get lists names
-			var _req = {
-				"query": "merge_tables",
-				"table_name": listMName,
-				"tables": value
-			};
-			var _res = await ipcRenderer.sendSync('message', _req);
-			console.log(_res);
+			// check special characters, space, numbers
+			if(listMName.includes(' '))
+			{
+				alert("Space not allowed in list name");
+			}
+			else if(/\d/.test(listMName))
+			{
+				alert("no number allowed in list name");
+			}
 
-			handleCloseML();
+			else if(/[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]+/.test(listMName))
+			{
+				alert("no special characters allowed");
+			}
+			else
+			{
+
+				// send all list names
+				// get lists names
+				var _req = {
+					"query": "merge_tables",
+					"table_name": listMName,
+					"tables": value
+				};
+				var _res = await ipcRenderer.sendSync('message', _req);
+				console.log(_res);
+
+				handleCloseML();
+
+				toaster.push(message("info", "merge done"), {
+					placement: 'bottomEnd'
+				});
+			}
 		}
 		else
 		{
@@ -554,18 +644,39 @@ export default function CategoryPage() {
 
 		if(listSName != null && listSName != "" && valueTWO.length > 0)
 		{
-			// send all list names
-			// get lists names
-			var _req = {
-				"query": "subtract_tables",
-				"table_name": listSName,
-				"main_table": id,
-				"tables": valueTWO
-			};
-			var _res = await ipcRenderer.sendSync('message', _req);
-			console.log(_res);
+			// check special characters, space, numbers
+			if(listSName.includes(' '))
+			{
+				alert("Space not allowed in list name");
+			}
+			else if(/\d/.test(listSName))
+			{
+				alert("no number allowed in list name");
+			}
 
-			handleCloseSL();
+			else if(/[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]+/.test(listSName))
+			{
+				alert("no special characters allowed");
+			}
+			else
+			{
+				// send all list names
+				// get lists names
+				var _req = {
+					"query": "subtract_tables",
+					"table_name": listSName,
+					"main_table": id,
+					"tables": valueTWO
+				};
+				var _res = await ipcRenderer.sendSync('message', _req);
+				console.log(_res);
+
+				handleCloseSL();
+
+				toaster.push(message("info", "list subtract operation done"), {
+					placement: 'bottomEnd'
+				});
+			}
 		}
 		else
 		{
@@ -593,18 +704,40 @@ export default function CategoryPage() {
 
 		if(listUName != null && listUName != "" && valueTHREE.length > 0)
 		{
-			// send all list names
-			// get lists names
-			var _req = {
-				"query": "unique_tables",
-				"table_name": listUName,
-				"main_table": id,
-				"tables": valueTHREE
-			};
-			var _res = await ipcRenderer.sendSync('message', _req);
-			console.log(_res);
+			// check special characters, space, numbers
+			if(listUName.includes(' '))
+			{
+				alert("Space not allowed in list name");
+			}
+			else if(/\d/.test(listUName))
+			{
+				alert("no number allowed in list name");
+			}
 
-			handleCloseUL();
+			else if(/[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]+/.test(listUName))
+			{
+				alert("no special characters allowed");
+			}
+			else
+			{
+
+				// send all list names
+				// get lists names
+				var _req = {
+					"query": "unique_tables",
+					"table_name": listUName,
+					"main_table": id,
+					"tables": valueTHREE
+				};
+				var _res = await ipcRenderer.sendSync('message', _req);
+				console.log(_res);
+
+				handleCloseUL();
+
+				toaster.push(message("info", "list unique operation done"), {
+					placement: 'bottomEnd'
+				});
+			}
 		}
 		else
 		{
@@ -657,6 +790,10 @@ export default function CategoryPage() {
 			console.log(_res);
 
 			handleCloseSBE();
+
+			toaster.push(message("info", "list split operation done"), {
+				placement: 'bottomEnd'
+			});
 		}
 		else
 		{
@@ -702,6 +839,10 @@ export default function CategoryPage() {
 
 		activeItem.status = activeItem.status ? null : 'EDIT';
 		setData(nextData);
+
+		toaster.push(message("info", "list row data changed"), {
+			placement: 'bottomEnd'
+		});
 	};
 
 	async function deleteRow(rid) {
@@ -722,6 +863,10 @@ export default function CategoryPage() {
 				return i.id == rid;
 			}), 1);
 			setData(nextData);
+
+			toaster.push(message("info", "list row delete operation done"), {
+				placement: 'bottomEnd'
+			});
 		}
 	};
 
@@ -748,6 +893,10 @@ export default function CategoryPage() {
 			});
 
 			setData(nextData);
+
+			toaster.push(message("info", "list rows delete operation done"), {
+				placement: 'bottomEnd'
+			});
 			
 		}
 	}
@@ -778,6 +927,10 @@ export default function CategoryPage() {
 			var _res = await ipcRenderer.sendSync('message', _req);
 
 			handleCloseNRM();
+
+			toaster.push(message("info", "list new row operation done"), {
+				placement: 'bottomEnd'
+			});
 		}
 	}
 
@@ -795,7 +948,7 @@ export default function CategoryPage() {
 								<Dropdown.Item onSelect={exportList}>Export (CSV)</Dropdown.Item>
 								<Dropdown.Item divider />
 								<Dropdown.Menu title="Repair">
-									<Dropdown.Item>Emails (Domain)</Dropdown.Item>
+									<Dropdown.Item>Validate Emails</Dropdown.Item>
 									<Dropdown.Item onSelect={removeDuplicates}>Remove Duplicates</Dropdown.Item>
 									<Dropdown.Item onSelect={removeEmailsFilter}>Remove Emails (Filter)</Dropdown.Item>
 									<Dropdown.Item onSelect={removeMissingEmail}>Remove Null Data</Dropdown.Item>

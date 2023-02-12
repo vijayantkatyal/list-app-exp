@@ -145,6 +145,11 @@ ipcMain.on("message", (event, data) => {
 			// 	event.returnValue = "data created";
 			// });
 
+			// ops
+			// null data
+			// remove duplicates
+			// validate email
+
 			database.batchInsert(data.table_name, data.data, 500).then(function(){
 				event.returnValue = "data_created";
 			});

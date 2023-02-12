@@ -9,6 +9,8 @@ import PageIcon from '@rsuite/icons/Page';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 
+import { Notification, useToaster, Placeholder } from 'rsuite';
+
 import { useLoadingContext } from "react-router-loading";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -26,6 +28,14 @@ function classNames(...classes) {
 }
 
 function App() {
+
+	function message(type, text) {
+		return (
+			<Notification type={type} header={type} closable>
+			<p>{text}</p>
+			</Notification>
+		);
+	};
 
 	const loadingContext = useLoadingContext();
 	const { ipcRenderer } = window;
@@ -49,6 +59,8 @@ function App() {
 
 	const navigate = useNavigate();
 
+	const toaster = useToaster();
+
 	async function getAllLists() {
 		var _req = {
 			"query": "get_all_tables",
@@ -58,7 +70,10 @@ function App() {
 		setLists(_res);
 		loadingContext.done();
 
-		alert("Lists Refreshed");
+		// alert("fetching all Lists");
+		toaster.push(message("info", "all lists fetched"), {
+			placement: 'bottomEnd'
+		});
 	}
 
 	// async function addNewTable() {
@@ -121,6 +136,25 @@ function App() {
 		{
 			_err = "List name cannot be empty.";
 		}
+		
+		// check if list name contains space or number
+		if(formValue.list_name != null && formValue.list_name != "")
+		{
+			if(formValue.list_name.includes(' '))
+			{
+				_err = "Space not allowed in list name";
+			}
+
+			if(/\d/.test(formValue.list_name))
+			{
+				_err = "no number allowed in list name";
+			}
+
+			if(/[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]+/.test(formValue.list_name))
+			{
+				_err ="no special characters allowed";
+			}
+		}
 
 		if(formValue.email_column == null || formValue.email_column == "")
 		{
@@ -129,7 +163,12 @@ function App() {
 
 		setFormErrorMsg(_err);
 
-		if(formValue.list_name != null && formValue.list_name != "" && formValue.email_column != null && formValue.email_column != "")
+		if(
+			formValue.list_name != null && formValue.list_name != "" && 
+			formValue.list_name.includes(' ') == false && 
+			/\d/.test(formValue.list_name) == false &&
+			/[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]+/.test(formValue.list_name) == false &&
+			formValue.email_column != null && formValue.email_column != "")
 		{
 			// alert("saving to database");
 			console.log(formValue);
@@ -161,17 +200,17 @@ function App() {
 
 					// console.log(_new_array);
 
-					var _list_name = formValue.list_name;
+					// var _list_name = formValue.list_name;
 
-					_list_name.replace(" ", "_");
-					_list_name.replace(".", "_");
-					_list_name.replace("+", "_");
-					_list_name.replace("@", "_");
-					_list_name.replace("!", "_");
+					// _list_name.replace(" ", "_");
+					// _list_name.replace(".", "_");
+					// _list_name.replace("+", "_");
+					// _list_name.replace("@", "_");
+					// _list_name.replace("!", "_");
 
 					var _req = {
 						"query": "insert_new_table",
-						"table_name": _list_name,
+						"table_name": formValue.list_name,
 						"columns": ["first_name", "last_name", "email"],
 						"data": _new_array
 					};
@@ -184,7 +223,36 @@ function App() {
 						handleCloseModal();
 
 						// open list
+						toaster.push(message("info", "opening list: " + formValue.list_name), {
+							placement: 'bottomEnd'
+						});
 						navigate("/list/" + formValue.list_name);
+
+						// remove null data
+
+						var _null_req = {
+							"query": "remove_missing_email_from_table",
+							"table_name": formValue.list_name
+						};
+						var _null_res = await ipcRenderer.sendSync('message', _null_req);
+						console.log(_null_res);
+				
+						toaster.push(message("info", "removed missing emails from list"), {
+							placement: 'bottomEnd'
+						});
+
+						// remove duplicates
+						var _dup_req = {
+							"query": "remove_duplicate_table",
+							"table_name": formValue.list_name
+						};
+						var _dup_res = await ipcRenderer.sendSync('message', _dup_req);
+						console.log(_dup_res);
+						// alert(_res);
+				
+						toaster.push(message("info", "list duplicated removed"), {
+							placement: 'bottomEnd'
+						});
 					}
 					else
 					{

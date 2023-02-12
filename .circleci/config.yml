@@ -8,6 +8,7 @@ jobs:
       - run: sudo npm install -g npm
       - run: npm cache clean --force
       - run: npm install --no-package-lock
+      - run: npm run build
       - run: npm run rebuild
       - run: npm run dist:mac
 
