@@ -976,7 +976,7 @@ export default function CategoryPage() {
 				</FlexboxGrid>
 			</div>
 			<hr />
-			<div style={{ height: "calc(100vh - 170px)" }}>
+			<div style={{ height: "calc(90vh - 170px)" }}>
 				<Table data={getData()} autoHeight={false} fillHeight={true} virtualized loading={loading} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn}>
 					<Column width={50} align="center">
 						<HeaderCell style={{ padding: 0 }}>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from "react-router-dom";
-import { Container, Header, Sidebar, Sidenav, Content, Navbar, Nav, Button, Uploader, Modal, Input, Form, Checkbox, CheckboxGroup, Schema, SelectPicker } from 'rsuite';
+import { Container, Header, Sidebar, Sidenav, Content, Navbar, Nav, Button, Uploader, Modal, Input, Form, Checkbox, CheckboxGroup, Schema, SelectPicker, Grid, Row, Col } from 'rsuite';
 import ListIcon from '@rsuite/icons/List';
 import PlusIcon from '@rsuite/icons/Plus';
 import ReloadIcon from '@rsuite/icons/Reload';
@@ -8,6 +8,8 @@ import TableIcon from '@rsuite/icons/Table';
 import PageIcon from '@rsuite/icons/Page';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
+import TrashIcon from '@rsuite/icons/Trash';
+import CheckIcon from '@rsuite/icons/Check';
 
 import { Notification, useToaster, Placeholder } from 'rsuite';
 
@@ -41,6 +43,8 @@ function App() {
 	const { ipcRenderer } = window;
 	const [lists, setLists] = useState([]);
 	const [activeKey, setActiveKey] = useState(null);
+
+	const [selectedLists, setSelectedLists] = useState([]);
 
 	const initFormValue = {
 		list_name: "",
@@ -274,33 +278,104 @@ function App() {
 		getAllLists();
 	}, []);
 
+	async function listItemChecked(value, checked) {
+		if(checked)
+		{
+			// add
+			setSelectedLists([...selectedLists, value]);
+		}
+		else
+		{
+			// remove
+			const tempList = [...selectedLists];
+			tempList.splice(value, 1);
+			setSelectedLists(tempList);
+		}
+
+		// console.log(selectedLists);
+	}
+
+	async function deleteSelectedLists() {
+		console.log(selectedLists);
+
+		var result = window.confirm("Sure, Want to delete selected list?");
+		if (result) {
+			// Logic to delete
+
+			selectedLists.forEach(async (list_name, index) => {
+				console.log(list_name);
+				
+				var _req = {
+					"query": "delete_table",
+					"table_name": list_name
+				};
+				var _res = await ipcRenderer.sendSync('message', _req);
+				// alert(_res);
+
+				toaster.push(message("info", "list removed"), {
+					placement: 'bottomEnd'
+				});
+			});
+			
+			setSelectedLists([]);
+			getAllLists();
+			navigate("/info");
+		}
+	}
+
 	return (
-		<Container style={{ height: '100vh' }}>
+		<Container>
 			<Sidebar
 				style={{ background: '#f7f7fa', display: 'flex', flexDirection: 'column' }}
-				width={260}
+				width={300}
 				className="sidebarContainer"
 			>
 				<Sidenav expanded={true} defaultOpenKeys={['3']} appearance="subtle">
 					<Sidenav.Body>
 						<Nav activeKey={activeKey} onSelect={setActiveKey}>
-							<SimpleBar style={{ maxHeight: 'cal(90vh - 170px)' }}>
+							<SimpleBar style={{ maxHeight: '75vh' }}>
 							{lists?.map((list, index) => (
-								<Nav.Item
-									eventKey={list.name}
-									key={index}
-									className={
-										classNames(
-											activeKey != null && activeKey == list.id ? 'active' : null,
-											'nav-item'
-										)
-									}
-									onClick={() => navigate("/list/" + list.name)}
-								>
-									# {list.name}
-								</Nav.Item>
+								<div>
+									<Checkbox inline={true} value={list.name} onChange={(value, checked) => listItemChecked(value, checked)}/>
+									<Nav.Item
+										eventKey={list.name}
+										key={index}
+										className={
+											classNames(
+												activeKey != null && activeKey == list.id ? 'active' : null,
+												'nav-item'
+											)
+										}
+										style={{
+											display: 'inline',
+											paddingLeft: '5px'
+										}}
+										onClick={() => navigate("/list/" + list.name)}
+									>
+										# {list.name}
+									</Nav.Item>
+								</div>
 							))}
 							</SimpleBar>
+							<Nav.Item divider style={{ borderTop: '1px solid #ddd' }} />
+							<div>
+							<Grid fluid>
+								<Row className="show-grid">
+									{selectedLists.length > 0 ?
+									<Col>
+										<Nav.Item icon={<TrashIcon />} onClick={deleteSelectedLists} style={{ color: 'red' }}>
+											&nbsp;&nbsp;Delete
+										</Nav.Item>
+									</Col>
+									: null }
+									{/* <Col>
+										<Nav.Item icon={<TrashIcon />} onClick={getAllLists}>
+											&nbsp;&nbsp;Delete All
+										</Nav.Item>		
+									</Col> */}
+								</Row>
+							</Grid>
+							</div>
 							<Nav.Item divider style={{ borderTop: '1px solid #ddd' }} />
 							<Nav.Item icon={<ReloadIcon />} onClick={getAllLists}>
 								Refresh
