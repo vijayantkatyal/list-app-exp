@@ -255,7 +255,7 @@ ipcMain.on("message", (event, data) => {
 			sql += _q;
 		});
 
-		database.raw("DELETE FROM abc WHERE email NOT LIKE '%@%' " + sql).then(function(res){
+		database.raw("DELETE FROM " + data.table_name + " WHERE email NOT LIKE '%@%' " + sql).then(function(res){
 			event.returnValue = "done";
 		});
 

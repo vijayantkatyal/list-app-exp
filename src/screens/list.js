@@ -525,6 +525,8 @@ export default function CategoryPage() {
 			});
 
 			setRdeInput(null);
+
+			handleCloseRDE();
 		}
 		else
 		{
