@@ -547,6 +547,19 @@ export default function CategoryPage() {
 		});
 	}
 
+	async function fixEmailsTypo() {
+		var _req = {
+			"query": "fix_email_typos_from_table",
+			"table_name": id
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		console.log(_res);
+
+		toaster.push(message("info", "fixed emails typo from list"), {
+			placement: 'bottomEnd'
+		});
+	}
+
 	async function mergeLists() {
 
 		// get lists names
@@ -951,7 +964,7 @@ export default function CategoryPage() {
 								<Dropdown.Item divider />
 								<Dropdown.Menu title="Repair">
 									<Dropdown.Item onSelect={removeMissingEmail}>Remove Null Data</Dropdown.Item>
-									<Dropdown.Item>Validate Emails</Dropdown.Item>
+									<Dropdown.Item onSelect={fixEmailsTypo}>Fix Emails Typo</Dropdown.Item>
 									<Dropdown.Item onSelect={removeEmailsFilter}>Remove Emails (Filter)</Dropdown.Item>
 									<Dropdown.Item onSelect={removeDuplicates}>Remove Duplicates</Dropdown.Item>
 								</Dropdown.Menu>

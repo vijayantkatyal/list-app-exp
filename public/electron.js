@@ -116,6 +116,45 @@ app.on("ready", function(){
 
 });
 
+function suggest_corrected_email(input_email) {
+    var email_domains = {
+        'gmail'     : ['gamil', 'gmal', 'gimail', 'gmai', 'gmaill', 'gamail', 'g-mail' ],
+        'yahoo'     : ['yahho', 'yaho', 'yahop', 'yaoo', 'yayoo'],
+        'hotmail'   : ['hotmaail', 'hotmai', 'hotmal', 'hotmial', 'hotmali', 'hotmsil', 'hotail', 'hotmaiil', 'htomail'],
+        'outlook'   : ['outlok', 'otlook', 'outluok', 'outlok'],
+        'aol'       : ['aool', 'all', 'a0l', 'aoo', 'al'],
+        'icloud'    : ['icloudd', 'iclloud', 'iclloudd', 'icllod', 'icoud'],
+        'protonmail': ['protonmaill', 'protonmailll', 'protomail', 'promtomail', 'prtonmail'],
+        'ymail'     : ['yail', 'ymaill', 'ymaili', 'ymaail', 'ymial'],
+        'live'      : ['lve', 'livee', 'liev', 'lvie', 'liive'],
+        'rocketmail': ['rocketmaill', 'roketmail', 'rocktmail', 'rocketmaiil', 'rocketmaul'],
+        'zoho'      : ['zoho', 'zoo', 'zohoo', 'zohi', 'zohoemail'],
+        // Add more domain corrections here
+    };
+
+    var parts = input_email.split('@');
+    if (parts.length === 2) {
+        var username = parts[0];
+        var domain = parts[1].toLowerCase();
+        var domain_parts = domain.split('.');
+
+        if (domain_parts.length === 2) {
+            var domain_name = domain_parts[0];
+            var top_level_domain = domain_parts[1];
+
+            for (var valid_domain in email_domains) {
+                if (email_domains.hasOwnProperty(valid_domain)) {
+                    if (valid_domain === domain_name || email_domains[valid_domain].includes(domain_name)) {
+                        return username + '@' + valid_domain + '.' + top_level_domain;
+                    }
+                }
+            }
+        }
+    }
+
+    return input_email; // Return original email if no correction is found
+}
+
 
 
 
@@ -232,6 +271,141 @@ ipcMain.on("message", (event, data) => {
 		database(data.table_name).where("email", null).delete().then(function(res){
 			event.returnValue = "done";
 		});	
+	}
+
+	if(data.query == "fix_email_typos_from_table")
+	{
+
+		console.log("aaaaa");
+
+		// database(data.table_name).where("email", null).delete().then(function(res){
+		// 	event.returnValue = "done";
+		// });	
+
+		database(data.table_name)
+		.select("*")
+		// .orWhereLike('email', '%gmaill%')
+		.orWhereLike('email', '%gamail%')
+		.orWhereLike('email', '%gmal%')
+		.orWhereLike('email', '%gimail%')
+		.orWhereLike('email', '%gmai%')
+		.orWhereLike('email', '%gmaill%')
+		.orWhereLike('email', '%gamail%')
+		.orWhereLike('email', '%g-mail%')
+		
+		.orWhereLike('email', '%yahho%')
+		.orWhereLike('email', '%yaho%')
+		.orWhereLike('email', '%yahop%')
+		.orWhereLike('email', '%yaoo%')
+		.orWhereLike('email', '%yayoo%')
+		
+		.orWhereLike('email', '%hotmaail%')
+		.orWhereLike('email', '%hotmai%')
+		.orWhereLike('email', '%hotmal%')
+		.orWhereLike('email', '%hotmial%')
+		.orWhereLike('email', '%hotmali%')
+		.orWhereLike('email', '%hotmsil%')
+		.orWhereLike('email', '%hotail%')
+		.orWhereLike('email', '%hotmaiil%')
+		.orWhereLike('email', '%htomail%')
+		
+		.orWhereLike('email', '%outlok%')
+		.orWhereLike('email', '%otlook%')
+		.orWhereLike('email', '%outluok%')
+
+		.orWhereLike('email', '%aool%')
+		.orWhereLike('email', '%all%')
+		.orWhereLike('email', '%a0l%')
+		.orWhereLike('email', '%aoo%')
+		.orWhereLike('email', '%al%')
+
+		.orWhereLike('email', '%icloudd%')
+		.orWhereLike('email', '%iclloud%')
+		.orWhereLike('email', '%iclloudd%')
+		.orWhereLike('email', '%icllod%')
+		.orWhereLike('email', '%icoud%')
+		
+		.orWhereLike('email', '%protonmaill%')
+		.orWhereLike('email', '%protonmailll%')
+		.orWhereLike('email', '%protomail%')
+		.orWhereLike('email', '%promtomail%')
+		.orWhereLike('email', '%prtonmail%')
+		
+		.orWhereLike('email', '%yail%')
+		.orWhereLike('email', '%ymaill%')
+		.orWhereLike('email', '%ymaili%')
+
+		.orWhereLike('email', '%ymaail%')
+		.orWhereLike('email', '%ymial%')
+
+		.orWhereLike('email', '%lve%')
+		.orWhereLike('email', '%livee%')
+		.orWhereLike('email', '%liev%')
+		.orWhereLike('email', '%lvie%')
+		.orWhereLike('email', '%liive%')
+
+		.orWhereLike('email', '%rocketmaill%')
+		.orWhereLike('email', '%roketmail%')
+		.orWhereLike('email', '%rocktmail%')
+		.orWhereLike('email', '%rocketmaiil%')
+		.orWhereLike('email', '%rocketmaul%')
+
+		.orWhereLike('email', '%zoho%')
+		.orWhereLike('email', '%zoo%')
+		.orWhereLike('email', '%zohoo%')
+		.orWhereLike('email', '%zohi%')
+		.orWhereLike('email', '%zohoemail%')
+
+		.then(function(resp){
+
+			database.transaction(trx => {
+				const queries = [];
+
+				resp.forEach(item => {
+					var _new_email = suggest_corrected_email(item.email);
+					const query = database(data.table_name).where('id', item.id).update({
+						'email': _new_email
+					}).transacting(trx);
+					queries.push(query);
+				});
+
+				Promise
+					.all(queries)
+					.then(trx.commit)
+					.catch(trx.rollback)
+					.finally(function(rr){
+						event.returnValue = "done";
+					});
+			})
+
+			// var processed = 0;
+
+			// resp.forEach((item) => {
+
+			// 	console.log(item);
+			// 	console.log("row id: " + item.id);
+
+			// 	console.log("old email: " + item.email);
+
+			// 	var _new_email = suggest_corrected_email(item.email);
+
+			// 	console.log("new email: " + _new_email);
+
+				
+
+
+			// 	// database(data.table_name).where('id', item.id).update('email', _new_email).then(function(res){
+			// 	// 	console.log("total: " + resp.length);
+			// 	// 	processed++;
+			// 	// 	console.log("processed: " + processed);
+			// 	// 	if(processed == resp.length)
+			// 	// 	{
+			// 	// 		// console.log(item.email);
+			// 	// 		event.returnValue = "done";
+			// 	// 	}
+			// 	// });
+			// });
+		});
 	}
 
 	// remove emails based on filter
