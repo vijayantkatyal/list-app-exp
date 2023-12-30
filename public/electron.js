@@ -152,7 +152,7 @@ function suggest_corrected_email(input_email) {
         }
     }
 
-    return input_email; // Return original email if no correction is found
+    return false; // Return original email if no correction is found
 }
 
 
@@ -285,76 +285,77 @@ ipcMain.on("message", (event, data) => {
 		database(data.table_name)
 		.select("*")
 		// .orWhereLike('email', '%gmaill%')
-		.orWhereLike('email', '%gamail%')
-		.orWhereLike('email', '%gmal%')
-		.orWhereLike('email', '%gimail%')
-		.orWhereLike('email', '%gmai%')
-		.orWhereLike('email', '%gmaill%')
-		.orWhereLike('email', '%gamail%')
-		.orWhereLike('email', '%g-mail%')
+		.orWhereLike('email', '!=', '%gmail.com%')
+		.orWhereLike('email', '%gamail.com%')
+		.orWhereLike('email', '%gmal.com%')
+		.orWhereLike('email', '%gimail.com%')
+		.orWhereLike('email', '%gmai.com%')
+		.orWhereLike('email', '%gmaill.com%')
+		.orWhereLike('email', '%gamail.com%')
+		.orWhereLike('email', '%g-mail.com%')
 		
-		.orWhereLike('email', '%yahho%')
-		.orWhereLike('email', '%yaho%')
-		.orWhereLike('email', '%yahop%')
-		.orWhereLike('email', '%yaoo%')
-		.orWhereLike('email', '%yayoo%')
+		.orWhereLike('email', '%yahho.com%')
+		.orWhereLike('email', '%yaho.com%')
+		.orWhereLike('email', '%yahop.com%')
+		.orWhereLike('email', '%yaoo.com%')
+		.orWhereLike('email', '%yayoo.com%')
 		
-		.orWhereLike('email', '%hotmaail%')
-		.orWhereLike('email', '%hotmai%')
-		.orWhereLike('email', '%hotmal%')
-		.orWhereLike('email', '%hotmial%')
-		.orWhereLike('email', '%hotmali%')
-		.orWhereLike('email', '%hotmsil%')
-		.orWhereLike('email', '%hotail%')
-		.orWhereLike('email', '%hotmaiil%')
-		.orWhereLike('email', '%htomail%')
+		.orWhereLike('email', '%hotmaail.com%')
+		.orWhereLike('email', '%hotmai.com%')
+		.orWhereLike('email', '%hotmal.com%')
+		.orWhereLike('email', '%hotmial.com%')
+		.orWhereLike('email', '%hotmali.com%')
+		.orWhereLike('email', '%hotmsil.com%')
+		.orWhereLike('email', '%hotail.com%')
+		.orWhereLike('email', '%hotmaiil.com%')
+		.orWhereLike('email', '%htomail.com%')
 		
-		.orWhereLike('email', '%outlok%')
-		.orWhereLike('email', '%otlook%')
-		.orWhereLike('email', '%outluok%')
+		.orWhereLike('email', '%outlok.com%')
+		.orWhereLike('email', '%otlook.com%')
+		.orWhereLike('email', '%outluok.com%')
 
-		.orWhereLike('email', '%aool%')
-		.orWhereLike('email', '%all%')
-		.orWhereLike('email', '%a0l%')
-		.orWhereLike('email', '%aoo%')
-		.orWhereLike('email', '%al%')
+		.orWhereLike('email', '%aool.com%')
+		.orWhereLike('email', '%all.com%')
+		.orWhereLike('email', '%a0l.com%')
+		.orWhereLike('email', '%aoo.com%')
+		.orWhereLike('email', '%al.com%')
 
-		.orWhereLike('email', '%icloudd%')
-		.orWhereLike('email', '%iclloud%')
-		.orWhereLike('email', '%iclloudd%')
-		.orWhereLike('email', '%icllod%')
-		.orWhereLike('email', '%icoud%')
+		.orWhereLike('email', '%icloudd.com%')
+		.orWhereLike('email', '%iclloud.com%')
+		.orWhereLike('email', '%iclloudd.com%')
+		.orWhereLike('email', '%icllod.com%')
+		.orWhereLike('email', '%icoud.com%')
 		
-		.orWhereLike('email', '%protonmaill%')
-		.orWhereLike('email', '%protonmailll%')
-		.orWhereLike('email', '%protomail%')
-		.orWhereLike('email', '%promtomail%')
-		.orWhereLike('email', '%prtonmail%')
+		.orWhereLike('email', '%protonmaill.com%')
+		.orWhereLike('email', '%protonmailll.com%')
+		.orWhereLike('email', '%protomail.com%')
+		.orWhereLike('email', '%promtomail.com%')
+		.orWhereLike('email', '%prtonmail.com%')
 		
-		.orWhereLike('email', '%yail%')
-		.orWhereLike('email', '%ymaill%')
-		.orWhereLike('email', '%ymaili%')
+		.orWhereLike('email', '%yail.com%')
+		.orWhereLike('email', '%ymaill.com%')
+		.orWhereLike('email', '%ymaili.com%')
 
-		.orWhereLike('email', '%ymaail%')
-		.orWhereLike('email', '%ymial%')
+		.orWhereLike('email', '%ymaail.com%')
+		.orWhereLike('email', '%ymial.com%')
 
-		.orWhereLike('email', '%lve%')
-		.orWhereLike('email', '%livee%')
-		.orWhereLike('email', '%liev%')
-		.orWhereLike('email', '%lvie%')
-		.orWhereLike('email', '%liive%')
+		.orWhereLike('email', '%lv.com%')
+		.orWhereLike('email', '%livee.com%')
+		.orWhereLike('email', '%liev.com%')
+		.orWhereLike('email', '%lvie.com%')
+		.orWhereLike('email', '%liive.com%')
 
-		.orWhereLike('email', '%rocketmaill%')
-		.orWhereLike('email', '%roketmail%')
-		.orWhereLike('email', '%rocktmail%')
-		.orWhereLike('email', '%rocketmaiil%')
-		.orWhereLike('email', '%rocketmaul%')
+		.orWhereLike('email', '%rocketmaill.com%')
+		.orWhereLike('email', '%roketmail.com%')
+		.orWhereLike('email', '%rocktmail.com%')
+		.orWhereLike('email', '%rocketmaiil.com%')
+		.orWhereLike('email', '%rocketmaul.com%')
 
-		.orWhereLike('email', '%zoho%')
-		.orWhereLike('email', '%zoo%')
-		.orWhereLike('email', '%zohoo%')
-		.orWhereLike('email', '%zohi%')
-		.orWhereLike('email', '%zohoemail%')
+		// .orWhereLike('email', '%zoho.com%')
+		.orWhereLike('email', '%zoo.com%')
+		.orWhereLike('email', '%zohoo.com%')
+		.orWhereLike('email', '%zohi.com%')
+		.orWhereLike('email', '%zohoemail.com%')
 
 		.then(function(resp){
 
@@ -363,10 +364,14 @@ ipcMain.on("message", (event, data) => {
 
 				resp.forEach(item => {
 					var _new_email = suggest_corrected_email(item.email);
-					const query = database(data.table_name).where('id', item.id).update({
-						'email': _new_email
-					}).transacting(trx);
-					queries.push(query);
+					if(_new_email != false)
+					{
+						console.log(item.email);
+						const query = database(data.table_name).where('id', item.id).update({
+							'email': _new_email
+						}).transacting(trx);
+						queries.push(query);
+					}
 				});
 
 				Promise
@@ -374,7 +379,7 @@ ipcMain.on("message", (event, data) => {
 					.then(trx.commit)
 					.catch(trx.rollback)
 					.finally(function(rr){
-						event.returnValue = "done";
+						event.returnValue = queries.length;
 					});
 			})
 

@@ -555,7 +555,7 @@ export default function CategoryPage() {
 		var _res = await ipcRenderer.sendSync('message', _req);
 		console.log(_res);
 
-		toaster.push(message("info", "fixed emails typo from list"), {
+		toaster.push(message("info", "fixed "+ _res +" emails typo from list, re-open list again"), {
 			placement: 'bottomEnd'
 		});
 	}
