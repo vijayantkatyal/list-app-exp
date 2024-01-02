@@ -513,6 +513,41 @@ export default function CategoryPage() {
 		}
 	}
 
+	function exportSelectedRows() {
+
+		var _dd = data;
+		if(_dd.length > 0)
+		{
+			var _dd = _dd.filter(function(item){
+				if(item && item[filterColumn])
+				{
+					return item[filterColumn].includes(filterText);
+				}
+			});
+		}
+
+		let csv = Papa.unparse({
+			data: _dd
+		});
+
+		// console.log(csv);
+
+		if (csv == null) return;
+
+		var blob = new Blob([csv]);
+		if (window.navigator.msSaveOrOpenBlob)  // IE hack; see http://msdn.microsoft.com/en-us/library/ie/hh779016.aspx
+			window.navigator.msSaveBlob(blob, id + ".csv");
+		else
+		{
+			var a = window.document.createElement("a");
+			a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+			a.download = id + ".csv";
+			document.body.appendChild(a);
+			a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
+			document.body.removeChild(a);
+		}
+	}
+
 	async function removeDuplicates() {
 
 		var _req = {
@@ -1007,7 +1042,12 @@ export default function CategoryPage() {
 								<Dropdown.Item onSelect={deleteList} style={{ color: 'red' }}>Delete</Dropdown.Item>
 							</Dropdown>
 
-							{checkedKeys.length > 0 ? <Button appearance="ghost" color="red" style={{ marginLeft: '5px' }} onClick={deleteSelectedRows}>Delete Selected</Button>: null}
+							{checkedKeys.length > 0 ?
+								<>
+									<Button appearance="ghost" color="red" style={{ marginLeft: '5px' }} onClick={deleteSelectedRows}>Delete Selected</Button>
+									<Button appearance="ghost" color="green" style={{ marginLeft: '5px' }} onClick={exportSelectedRows}>Export Selected</Button>
+								</>
+							: null}
 						</h3>
 					</FlexboxGrid.Item>
 					<FlexboxGrid.Item colspan={12} style={{ textAlign: 'end' }}>
