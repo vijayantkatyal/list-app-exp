@@ -165,6 +165,7 @@ export default function CategoryPage() {
 		checked = false;
 	} else if (checkedKeys.length > 0 && checkedKeys.length < data?.length) {
 		indeterminate = true;
+		checked = true;
 	}
 
 	const handleCheckAllRows = (value, checked) => {
@@ -192,13 +193,10 @@ export default function CategoryPage() {
 		{
 			var keys = checked ? data?.map(item => item.id) : [];
 			setCheckedKeys(keys);
-
-			console.log(filterText);
-			console.log(keys);
 		}
 	};
 	const handleCheck = (value, checked) => {
-	const keys = checked ? [...checkedKeys, value] : checkedKeys.filter(item => item !== value);
+		const keys = checked ? [...checkedKeys, value] : checkedKeys.filter(item => item !== value);
 		setCheckedKeys(keys);
 	};
 
