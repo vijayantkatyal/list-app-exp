@@ -168,8 +168,34 @@ export default function CategoryPage() {
 	}
 
 	const handleCheckAllRows = (value, checked) => {
-	const keys = checked ? data?.map(item => item.id) : [];
-		setCheckedKeys(keys);
+		
+		if(filterText != null)
+		{
+			var _dd = data;
+			if(_dd.length > 0)
+			{
+				var _dd = _dd.filter(function(item){
+					if(item && item[filterColumn])
+					{
+						return item[filterColumn].includes(filterText);
+					}
+				});
+			}
+			var keys = checked ? _dd.map(item => item.id) : [];
+			setCheckedKeys(keys);
+
+			console.log(filterText);
+
+			console.log(keys);
+		}
+		else
+		{
+			var keys = checked ? data?.map(item => item.id) : [];
+			setCheckedKeys(keys);
+
+			console.log(filterText);
+			console.log(keys);
+		}
 	};
 	const handleCheck = (value, checked) => {
 	const keys = checked ? [...checkedKeys, value] : checkedKeys.filter(item => item !== value);
@@ -890,6 +916,8 @@ export default function CategoryPage() {
 		if(result)
 		{
 			var _ids = checkedKeys;
+
+			console.log(_ids);
 
 			var _req = {
 				"query": "delete_rows",
