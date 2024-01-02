@@ -515,22 +515,11 @@ export default function CategoryPage() {
 
 	function exportSelectedRows() {
 
-		var _dd = data;
-		if(_dd.length > 0)
-		{
-			var _dd = _dd.filter(function(item){
-				if(item && item[filterColumn])
-				{
-					return item[filterColumn].includes(filterText);
-				}
-			});
-		}
+		var _dd = data.filter(({id}) => checkedKeys.includes(id));
 
 		let csv = Papa.unparse({
 			data: _dd
 		});
-
-		// console.log(csv);
 
 		if (csv == null) return;
 
