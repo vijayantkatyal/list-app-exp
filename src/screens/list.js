@@ -1033,8 +1033,8 @@ export default function CategoryPage() {
 
 							{checkedKeys.length > 0 ?
 								<>
-									<Button appearance="ghost" color="red" style={{ marginLeft: '5px' }} onClick={deleteSelectedRows}>Delete Selected</Button>
-									<Button appearance="ghost" color="green" style={{ marginLeft: '5px' }} onClick={exportSelectedRows}>Export Selected</Button>
+									<Button appearance="ghost" color="red" style={{ marginLeft: '5px' }} onClick={deleteSelectedRows}>Delete Selected ({ checkedKeys.length })</Button>
+									<Button appearance="ghost" color="green" style={{ marginLeft: '5px' }} onClick={exportSelectedRows}>Export Selected ({ checkedKeys.length })</Button>
 								</>
 							: null}
 						</h3>
