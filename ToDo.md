@@ -56,3 +56,36 @@
 [Done] style update to blue
 
 > csv without header
+
+> subtract - email as key to eliminate (skip first_name, last_name)
+> duplicate - preserver last row (instead of first)
+> unique - first_name, last_name (found and copy)
+
+
+-----------------
+
+> Import:
+- Remove duplicates (email) on import (keep first one matched)
+- Flat list (+, “,”)
+- Email extractor
+
+> Duplicate: 
+- Flat list of gmail, outlook email accounts (having + for use with folder)
+- Remove “.” (flat list)
+
+> Email extractor: remove extra characters from email column (validate)
+
+----
+
+[Done] Subtract: 
+✅ Parent - child (delete even if name exists or not) email based subtraction
+✅ Multiple child lists
+✅ On loop (remove child list one by one)
+
+> Merge:
+- Keep name from parent (even if not null)
+- After merge apply duplicate actions (and flat list)
+
+> Unique:
+- Use Parent name
+

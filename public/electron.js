@@ -481,28 +481,84 @@ ipcMain.on("message", (event, data) => {
 	// subtract tables
 	if(data.query == "subtract_tables")
 	{
+		// var _tables = data.tables;
+
+		// var sql = '';
+		// _tables.forEach((table_name, index) => {
+		// 	var _q = " EXCEPT SELECT first_name, last_name, email FROM " + table_name;
+		// 	sql += _q;
+		// });
+
+		// database.raw("SELECT first_name, last_name, email FROM " + data.main_table + " " + sql).then(function(table_data){
+		// 	database.schema.createTable(data.table_name, t => {
+		// 		t.increments('id').primary();
+		// 		t.string("first_name", 100);
+		// 		t.string("last_name", 100);
+		// 		t.string("email", 100);
+		// 	}).then(function(res) {
+	
+		// 		database.batchInsert(data.table_name, table_data, 500).then(function(){
+		// 			event.returnValue = "data_created";
+		// 		});
+	
+		// 	});
+		// });
+
+
+		console.log(data.tables);
+
 		var _tables = data.tables;
 
-		var sql = '';
-		_tables.forEach((table_name, index) => {
-			var _q = " EXCEPT SELECT first_name, last_name, email FROM " + table_name;
-			sql += _q;
-		});
+		var alphabets = ["b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
-		database.raw("SELECT first_name, last_name, email FROM " + data.main_table + " " + sql).then(function(table_data){
+		var sql = "";
+		var sql_end = " WHERE ";
+
+		_tables.forEach((table_name, index) => {
+
+			var _table_name = alphabets[index];
+
+			var _q = " LEFT JOIN " + table_name +" " + _table_name +" ON a.email = "+ _table_name +".email";
+			sql += _q;
+
+			if(_tables.length == 1)
+			{
+				var _q_end = _table_name +".email IS NULL";
+			}
+			else
+			{
+				if(index == 0)
+				{
+					var _q_end = _table_name +".email IS NULL";
+				}
+				else
+				{
+					var _q_end = " AND " + _table_name +".email IS NULL";
+				}
+			}
+			sql_end += _q_end;
+		});
+		
+
+
+		// // database.raw("SELECT a.first_name, a.last_name, a.email FROM " + data.main_table + " a LEFT JOIN " + data.tables + " b ON a.email = b.email WHERE b.email IS NULL").then(function(table_data){
+
+		database.raw("SELECT a.first_name, a.last_name, a.email FROM " + data.main_table + " a" + sql + sql_end).then(function(table_data){
+
+			console.log(table_data);
+
 			database.schema.createTable(data.table_name, t => {
 				t.increments('id').primary();
 				t.string("first_name", 100);
 				t.string("last_name", 100);
 				t.string("email", 100);
 			}).then(function(res) {
-	
 				database.batchInsert(data.table_name, table_data, 500).then(function(){
 					event.returnValue = "data_created";
 				});
-	
 			});
 		});
+
 	}
 
 	// subtract tables

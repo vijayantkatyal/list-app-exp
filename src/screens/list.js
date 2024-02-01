@@ -723,6 +723,8 @@ export default function CategoryPage() {
 			}
 			else
 			{
+				// console.log(id);
+				// console.log(valueTWO[0]);
 				// send all list names
 				// get lists names
 				var _req = {
