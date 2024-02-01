@@ -202,6 +202,8 @@ function App() {
 						}
 					});
 
+					_new_array = _.uniqBy(_new_array, 'email');
+
 					// console.log(_new_array);
 
 					// var _list_name = formValue.list_name;

@@ -65,7 +65,7 @@
 -----------------
 
 > Import:
-- Remove duplicates (email) on import (keep first one matched)
+✅ Remove duplicates (email) on import (keep first one matched)
 - Flat list (+, “,”)
 - Email extractor
 
