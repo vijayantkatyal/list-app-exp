@@ -82,9 +82,9 @@
 ✅ Multiple child lists
 ✅ On loop (remove child list one by one)
 
-> Merge:
-- Keep name from parent (even if not null)
-- After merge apply duplicate actions (and flat list)
+[Done] Merge:
+✅ Keep name from parent (even if not null)
+✅ After merge apply duplicate actions (and flat list)
 
 > Unique:
 - Use Parent name

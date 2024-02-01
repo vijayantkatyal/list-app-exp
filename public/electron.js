@@ -452,17 +452,35 @@ ipcMain.on("message", (event, data) => {
 	// merge tables
 	if(data.query == "merge_tables")
 	{
-		var _first_table = data.tables[0];
+		// var _first_table = data.tables[0];
 		var _tables = data.tables;
-		_tables.shift();
+		// _tables.shift();
 
 		var sql = '';
+		// var sql_end = '';
+
+		// var alphabets = ["b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+
 		_tables.forEach((table_name, index) => {
-			var _q = " UNION ALL SELECT first_name, last_name, email FROM " + table_name;
-			sql += _q;
+
+			if(_tables.length == 1)
+			{
+				sql += "SELECT first_name, last_name, email FROM " + table_name;
+			}
+			else
+			{
+				if(index == 0)
+				{
+					sql += "SELECT first_name, last_name, email FROM " + table_name;
+				}
+				else
+				{
+					sql += " UNION SELECT first_name, last_name, email FROM " + table_name;
+				}
+			}
 		});
 
-		database.raw("SELECT first_name, last_name, email FROM " + _first_table + " " + sql).then(function(table_data){
+		database.raw("SELECT first_name, last_name, email FROM (" + sql + ") GROUP BY email ORDER BY first_name").then(function(table_data){
 			database.schema.createTable(data.table_name, t => {
 				t.increments('id').primary();
 				t.string("first_name", 100);
