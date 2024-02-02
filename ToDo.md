@@ -66,12 +66,13 @@
 
 > Import:
 ✅ Remove duplicates (email) on import (keep first one matched)
-- Flat list (+, “,”)
+
+- Flat list (+, “.”)
 - Email extractor
 
-> Duplicate: 
-- Flat list of gmail, outlook email accounts (having + for use with folder)
-- Remove “.” (flat list)
+[Done] Duplicate: 
+✅ Flat list of gmail, outlook email accounts (having + for use with folder)
+✅ Remove “.” (flat list)
 
 > Email extractor: remove extra characters from email column (validate)
 

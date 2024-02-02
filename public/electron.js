@@ -155,6 +155,33 @@ function suggest_corrected_email(input_email) {
     return false; // Return original email if no correction is found
 }
 
+function flat_email(input_email) {
+	var parts = input_email.split('@');
+    if (parts.length === 2) {
+        var username = parts[0];
+
+		// check username has . in it
+		if(username.indexOf('.') > -1)
+		{
+			var _new_username = username.replace(".","");
+			return _new_username + "@gmail.com";
+		}
+
+		// return false;
+
+		// check username has + in it
+		if(username.indexOf('+') > -1)
+		{
+			var _u_parts = username.split('+');
+			return _u_parts[0] + "@gmail.com";
+		}
+
+		return false;
+    }
+
+    return false;
+}
+
 
 
 
@@ -364,6 +391,68 @@ ipcMain.on("message", (event, data) => {
 
 				resp.forEach(item => {
 					var _new_email = suggest_corrected_email(item.email);
+					if(_new_email != false)
+					{
+						console.log(item.email);
+						const query = database(data.table_name).where('id', item.id).update({
+							'email': _new_email
+						}).transacting(trx);
+						queries.push(query);
+					}
+				});
+
+				Promise
+					.all(queries)
+					.then(trx.commit)
+					.catch(trx.rollback)
+					.finally(function(rr){
+						event.returnValue = queries.length;
+					});
+			})
+
+			// var processed = 0;
+
+			// resp.forEach((item) => {
+
+			// 	console.log(item);
+			// 	console.log("row id: " + item.id);
+
+			// 	console.log("old email: " + item.email);
+
+			// 	var _new_email = suggest_corrected_email(item.email);
+
+			// 	console.log("new email: " + _new_email);
+
+				
+
+
+			// 	// database(data.table_name).where('id', item.id).update('email', _new_email).then(function(res){
+			// 	// 	console.log("total: " + resp.length);
+			// 	// 	processed++;
+			// 	// 	console.log("processed: " + processed);
+			// 	// 	if(processed == resp.length)
+			// 	// 	{
+			// 	// 		// console.log(item.email);
+			// 	// 		event.returnValue = "done";
+			// 	// 	}
+			// 	// });
+			// });
+		});
+	}
+
+	if(data.query == "remove_gmail_specific_duplicates_from_table")
+	{	
+
+		database(data.table_name)
+		.select("*")
+		.orWhereLike('email', '%gmail.com%')
+		.then(function(resp){
+
+			database.transaction(trx => {
+				const queries = [];
+
+				resp.forEach(item => {
+					var _new_email = flat_email(item.email);
 					if(_new_email != false)
 					{
 						console.log(item.email);

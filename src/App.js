@@ -202,6 +202,11 @@ function App() {
 						}
 					});
 
+					// flat gmail list
+					// remove +abc and . from gmail address
+
+					// _new_array = _new_array.map(item => _.mapValues(item, val => val.toLowerCase() === 'true'));
+
 					_new_array = _.uniqBy(_new_array, 'email');
 
 					// console.log(_new_array);
