@@ -77,7 +77,7 @@ export default function CategoryPage() {
 
 	function message(type, text) {
 		return (
-			<Notification type={type} header={type} closable>
+			<Notification type={type} header={type} closable duration={7500}>
 			<p>{text}</p>
 			</Notification>
 		);
