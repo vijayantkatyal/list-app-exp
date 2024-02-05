@@ -90,3 +90,15 @@
 > Unique:
 - Use Parent name
 
+---------------------------------
+
+[Done] email, first, last (list view and export - Email, First, Last)
+
+> yahoo, outlook flat
+> show toast little bit longer
+> new button to null data, email typos, flat, duplicate
+> remove duplicates order up (first)
+
+> merge, subtract -> trigger new button
+
+> trigger master button on import

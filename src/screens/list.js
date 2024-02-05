@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState, useRef } from 'react';
 import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton, Modal, Placeholder, Button, CheckPicker, Checkbox, TagInput, Form } from 'rsuite';
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { filter } from 'lodash';
+import { filter, isArray } from 'lodash';
 import GearIcon from '@rsuite/icons/Gear';
 import * as Papa from "papaparse";
 import { HotKeys } from "react-hotkeys";
@@ -491,8 +491,26 @@ export default function CategoryPage() {
 
 		// console.log(columnsData);
 
+		// var _dd = data.filter(({id}) => checkedKeys.includes(id));
+		// var _dd = data.map(function(val) {
+		// 	return val.slice(0,-1);
+		// })
+
+		var _dd = data.map(function(item) {
+			return {
+				"email": item.email,
+				"first": item.first_name,
+				"last": item.last_name
+			}
+		})
+
+		// console.log(isArray(data));
+		// console.log(data);
+
+		// console.log(_dd);
+
 		let csv = Papa.unparse({
-			data: data
+			data: _dd
 		});
 
 		// console.log(csv);
@@ -1077,12 +1095,27 @@ export default function CategoryPage() {
 						</HeaderCell>
 						<CheckCell dataKey="id" checkedKeys={checkedKeys} onChange={handleCheck} />
 					</Column>
-					{columns?.map((column, index) => (
-						<Column width={column[0] == "email" || column[0] == "Email" ? 350 : 100} flexGrow={column[0] == "email" || column[0] == "Email" ? 2 : 1} sortable>
-							<HeaderCell>{column[0]}</HeaderCell>
-							{column[0] != "id" ? <EditableCell dataKey={column[0]} onChange={handleChangeRow} /> : <Cell dataKey={column[0]} />}
-						</Column>
-					))}
+
+					{/* <Column width={100} flexGrow={1} sortable>
+						<HeaderCell>ID</HeaderCell>
+						<Cell dataKey="id" />
+					</Column> */}
+
+					<Column width={350} flexGrow={2} sortable>
+						<HeaderCell>Email</HeaderCell>
+						<EditableCell dataKey="email" onChange={handleChangeRow} />
+					</Column>
+
+					<Column width={100} flexGrow={1} sortable>
+						<HeaderCell>First Name</HeaderCell>
+						<EditableCell dataKey="first_name" onChange={handleChangeRow} />
+					</Column>
+
+					<Column width={100} flexGrow={1} sortable>
+						<HeaderCell>Last Name</HeaderCell>
+						<EditableCell dataKey="last_name" onChange={handleChangeRow} />
+					</Column>
+
 					<Column flexGrow={1}>
 						<HeaderCell></HeaderCell>
 						<ActionCell dataKey="id" onClick={handleEditState} />
