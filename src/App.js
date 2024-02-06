@@ -133,6 +133,86 @@ function App() {
 		value: item
 	}));
 
+	async function removeMissingEmailByID(table_name) {
+		var _req = {
+			"query": "remove_missing_email_from_table",
+			"table_name": table_name
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		console.log(_res);
+
+		toaster.push(message("info", "removed missing emails from list"), {
+			placement: 'bottomEnd'
+		});
+	}
+
+	async function fixEmailsTypoByID(table_name) {
+		var _req = {
+			"query": "fix_email_typos_from_table",
+			"table_name": table_name
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		console.log(_res);
+
+		toaster.push(message("info", "fixed "+ _res +" emails typo from list, re-open list again"), {
+			placement: 'bottomEnd'
+		});
+	}
+
+	async function fixGmailSpecificDuplicatesByID(table_name) {
+		var _req = {
+			"query": "remove_gmail_specific_duplicates_from_table",
+			"table_name": table_name
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		console.log(_res);
+
+		toaster.push(message("info", "removed "+ _res +" gmail email duplicates from list, re-open list again"), {
+			placement: 'bottomEnd'
+		});
+	}
+
+	async function fixOutlookSpecificDuplicatesByID(table_name) {
+		var _req = {
+			"query": "remove_outlook_specific_duplicates_from_table",
+			"table_name": table_name
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		console.log(_res);
+
+		toaster.push(message("info", "removed "+ _res +" outlook email duplicates from list, re-open list again"), {
+			placement: 'bottomEnd'
+		});
+	}
+
+	async function fixYahooSpecificDuplicatesByID(table_name) {
+		var _req = {
+			"query": "remove_yahoo_specific_duplicates_from_table",
+			"table_name": table_name
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		console.log(_res);
+
+		toaster.push(message("info", "removed "+ _res +" yahoo email duplicates from list, re-open list again"), {
+			placement: 'bottomEnd'
+		});
+	}
+
+	async function removeDuplicatesByID(table_name) {
+
+		var _req = {
+			"query": "remove_duplicate_table",
+			"table_name": table_name
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		console.log(_res);
+		// alert(_res);
+
+		toaster.push(message("info", "list duplicated removed"), {
+			placement: 'bottomEnd'
+		});
+	}
+
 	async function handleFormSubmit() {
 
 		var _err = "";
@@ -257,19 +337,29 @@ function App() {
 							placement: 'bottomEnd'
 						});
 
-						// remove duplicates
-						// var _dup_req = {
-						// 	"query": "remove_duplicate_table",
-						// 	"table_name": formValue.list_name
-						// };
-						// var _dup_res = await ipcRenderer.sendSync('message', _dup_req);
-						// console.log(_dup_res);
-						// // alert(_res);
-				
-						// toaster.push(message("info", "list duplicated removed"), {
-						// 	placement: 'bottomEnd'
-						// });
+						// remove null data
+						await removeMissingEmailByID(formValue.list_name);
 
+						// fix email typos
+						await fixEmailsTypoByID(formValue.list_name);
+
+						// fix flat email
+						
+						// gmail
+						await fixGmailSpecificDuplicatesByID(formValue.list_name);
+						
+						// outlook
+						await fixOutlookSpecificDuplicatesByID(formValue.list_name);
+						
+						// yahoo
+						await fixYahooSpecificDuplicatesByID(formValue.list_name);
+
+						// remove duplicates
+						await removeDuplicatesByID(formValue.list_name);
+
+						toaster.push(message("info", "List " + formValue.list_name + " Cleaned Up"), {
+							placement: 'bottomEnd'
+						});
 					}
 					else
 					{
