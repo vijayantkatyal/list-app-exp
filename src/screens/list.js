@@ -577,6 +577,33 @@ export default function CategoryPage() {
 		});
 	}
 
+	async function runAutomateOne() {
+
+		// remove null data
+		await removeMissingEmail();
+
+		// fix email typos
+		await fixEmailsTypo();
+
+		// fix flat email
+		
+		// gmail
+		await fixGmailSpecificDuplicates();
+		
+		// outlook
+		await fixOutlookSpecificDuplicates();
+		
+		// yahoo
+		await fixYahooSpecificDuplicates();
+
+		// remove duplicates
+		await removeDuplicates();
+
+		toaster.push(message("info", "List Cleaned Up"), {
+			placement: 'bottomEnd'
+		});
+	}
+
 	function removeEmailsFilter() {
 		handleOpenRDE();
 	}
@@ -1077,6 +1104,10 @@ export default function CategoryPage() {
 								<Dropdown.Item onSelect={renameList}>Rename</Dropdown.Item>
 								<Dropdown.Item onSelect={addNewRow}>Add Record</Dropdown.Item>
 								<Dropdown.Item onSelect={exportList}>Export (CSV)</Dropdown.Item>
+								<Dropdown.Item divider />
+								<Dropdown.Menu title="Automate">
+									<Dropdown.Item onSelect={runAutomateOne} title='Fix: Null Data, Email Typos, Flat Emails and Duplicate'>Run Clean Up</Dropdown.Item>
+								</Dropdown.Menu>
 								<Dropdown.Item divider />
 								<Dropdown.Menu title="Repair">
 									<Dropdown.Item onSelect={removeDuplicates}>Remove Duplicates</Dropdown.Item>

@@ -96,11 +96,8 @@
 [Done] show toast little bit longer
 [Done] remove duplicates order up (first)
 [Done] yahoo, outlook flat
-
 [Done] notificatio history for current view
-
-> new button to null data, email typos, flat, duplicate
-
+[Done] new button to null data, email typos, flat, duplicate
 > merge, subtract -> trigger new button
 
 > trigger master button on import
