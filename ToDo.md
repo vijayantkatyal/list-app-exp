@@ -94,10 +94,10 @@
 
 [Done] email, first, last (list view and export - Email, First, Last)
 [Done] show toast little bit longer
+[Done] remove duplicates order up (first)
+[Done] yahoo, outlook flat
 
-> yahoo, outlook flat
 > new button to null data, email typos, flat, duplicate
-> remove duplicates order up (first)
 
 > merge, subtract -> trigger new button
 

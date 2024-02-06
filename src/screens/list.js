@@ -639,6 +639,32 @@ export default function CategoryPage() {
 		});
 	}
 
+	async function fixOutlookSpecificDuplicates() {
+		var _req = {
+			"query": "remove_outlook_specific_duplicates_from_table",
+			"table_name": id
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		console.log(_res);
+
+		toaster.push(message("info", "removed "+ _res +" outlook email duplicates from list, re-open list again"), {
+			placement: 'bottomEnd'
+		});
+	}
+
+	async function fixYahooSpecificDuplicates() {
+		var _req = {
+			"query": "remove_yahoo_specific_duplicates_from_table",
+			"table_name": id
+		};
+		var _res = await ipcRenderer.sendSync('message', _req);
+		console.log(_res);
+
+		toaster.push(message("info", "removed "+ _res +" yahoo email duplicates from list, re-open list again"), {
+			placement: 'bottomEnd'
+		});
+	}
+
 	async function mergeLists() {
 
 		// get lists names
@@ -1046,11 +1072,13 @@ export default function CategoryPage() {
 								<Dropdown.Item onSelect={exportList}>Export (CSV)</Dropdown.Item>
 								<Dropdown.Item divider />
 								<Dropdown.Menu title="Repair">
+									<Dropdown.Item onSelect={removeDuplicates}>Remove Duplicates</Dropdown.Item>
 									<Dropdown.Item onSelect={removeMissingEmail}>Remove Null Data</Dropdown.Item>
 									<Dropdown.Item onSelect={fixEmailsTypo}>Fix Emails Typo</Dropdown.Item>
 									<Dropdown.Item onSelect={fixGmailSpecificDuplicates} title="remove . and +">Flat Gmail Specific Emails</Dropdown.Item>
+									<Dropdown.Item onSelect={fixOutlookSpecificDuplicates} title="remove . and +">Flat Outlook Specific Emails</Dropdown.Item>
+									<Dropdown.Item onSelect={fixYahooSpecificDuplicates} title="remove . and +">Flat Yahoo Specific Emails</Dropdown.Item>
 									<Dropdown.Item onSelect={removeEmailsFilter}>Remove Emails (Filter)</Dropdown.Item>
-									<Dropdown.Item onSelect={removeDuplicates}>Remove Duplicates</Dropdown.Item>
 								</Dropdown.Menu>
 								<Dropdown.Menu title="Actions">
 									<Dropdown.Item onSelect={mergeLists}>Merge</Dropdown.Item>

@@ -155,7 +155,7 @@ function suggest_corrected_email(input_email) {
     return false; // Return original email if no correction is found
 }
 
-function flat_email(input_email) {
+function flat_email_gmail(input_email) {
 	var parts = input_email.split('@');
     if (parts.length === 2) {
         var username = parts[0];
@@ -174,6 +174,60 @@ function flat_email(input_email) {
 		{
 			var _u_parts = username.split('+');
 			return _u_parts[0] + "@gmail.com";
+		}
+
+		return false;
+    }
+
+    return false;
+}
+
+function flat_email_outlook(input_email) {
+	var parts = input_email.split('@');
+    if (parts.length === 2) {
+        var username = parts[0];
+
+		// check username has . in it
+		if(username.indexOf('.') > -1)
+		{
+			var _new_username = username.replace(".","");
+			return _new_username + "@outlook.com";
+		}
+
+		// return false;
+
+		// check username has + in it
+		if(username.indexOf('+') > -1)
+		{
+			var _u_parts = username.split('+');
+			return _u_parts[0] + "@outlook.com";
+		}
+
+		return false;
+    }
+
+    return false;
+}
+
+function flat_email_yahoo(input_email) {
+	var parts = input_email.split('@');
+    if (parts.length === 2) {
+        var username = parts[0];
+
+		// check username has . in it
+		if(username.indexOf('.') > -1)
+		{
+			var _new_username = username.replace(".","");
+			return _new_username + "@yahoo.com";
+		}
+
+		// return false;
+
+		// check username has + in it
+		if(username.indexOf('+') > -1)
+		{
+			var _u_parts = username.split('+');
+			return _u_parts[0] + "@yahoo.com";
 		}
 
 		return false;
@@ -452,7 +506,7 @@ ipcMain.on("message", (event, data) => {
 				const queries = [];
 
 				resp.forEach(item => {
-					var _new_email = flat_email(item.email);
+					var _new_email = flat_email_gmail(item.email);
 					if(_new_email != false)
 					{
 						console.log(item.email);
@@ -471,34 +525,74 @@ ipcMain.on("message", (event, data) => {
 						event.returnValue = queries.length;
 					});
 			})
+		});
+	}
 
-			// var processed = 0;
+	if(data.query == "remove_outlook_specific_duplicates_from_table")
+	{	
 
-			// resp.forEach((item) => {
+		database(data.table_name)
+		.select("*")
+		.orWhereLike('email', '%outlook.com%')
+		.then(function(resp){
 
-			// 	console.log(item);
-			// 	console.log("row id: " + item.id);
+			database.transaction(trx => {
+				const queries = [];
 
-			// 	console.log("old email: " + item.email);
+				resp.forEach(item => {
+					var _new_email = flat_email_outlook(item.email);
+					if(_new_email != false)
+					{
+						console.log(item.email);
+						const query = database(data.table_name).where('id', item.id).update({
+							'email': _new_email
+						}).transacting(trx);
+						queries.push(query);
+					}
+				});
 
-			// 	var _new_email = suggest_corrected_email(item.email);
+				Promise
+					.all(queries)
+					.then(trx.commit)
+					.catch(trx.rollback)
+					.finally(function(rr){
+						event.returnValue = queries.length;
+					});
+			})
+		});
+	}
 
-			// 	console.log("new email: " + _new_email);
+	if(data.query == "remove_yahoo_specific_duplicates_from_table")
+	{	
 
-				
+		database(data.table_name)
+		.select("*")
+		.orWhereLike('email', '%yahoo.com%')
+		.then(function(resp){
 
+			database.transaction(trx => {
+				const queries = [];
 
-			// 	// database(data.table_name).where('id', item.id).update('email', _new_email).then(function(res){
-			// 	// 	console.log("total: " + resp.length);
-			// 	// 	processed++;
-			// 	// 	console.log("processed: " + processed);
-			// 	// 	if(processed == resp.length)
-			// 	// 	{
-			// 	// 		// console.log(item.email);
-			// 	// 		event.returnValue = "done";
-			// 	// 	}
-			// 	// });
-			// });
+				resp.forEach(item => {
+					var _new_email = flat_email_yahoo(item.email);
+					if(_new_email != false)
+					{
+						console.log(item.email);
+						const query = database(data.table_name).where('id', item.id).update({
+							'email': _new_email
+						}).transacting(trx);
+						queries.push(query);
+					}
+				});
+
+				Promise
+					.all(queries)
+					.then(trx.commit)
+					.catch(trx.rollback)
+					.finally(function(rr){
+						event.returnValue = queries.length;
+					});
+			})
 		});
 	}
 
