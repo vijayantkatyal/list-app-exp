@@ -98,6 +98,6 @@
 [Done] yahoo, outlook flat
 [Done] notificatio history for current view
 [Done] new button to null data, email typos, flat, duplicate
-> merge, subtract -> trigger new button
+[Done] merge, subtract -> trigger new button
 
 > trigger master button on import
