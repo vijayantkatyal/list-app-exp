@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState, useRef } from 'react';
-import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton, Modal, Placeholder, Button, CheckPicker, Checkbox, TagInput, Form } from 'rsuite';
+import { Table, Pagination, FlexboxGrid, Input, SelectPicker, Dropdown, IconButton, Modal, Placeholder, Button, CheckPicker, Checkbox, TagInput, Form, Timeline } from 'rsuite';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { filter, isArray } from 'lodash';
 import GearIcon from '@rsuite/icons/Gear';
@@ -75,7 +75,12 @@ const DeleteCell = ({ rowData, dataKey, onClick, ...props }) => {
 
 export default function CategoryPage() {
 
+	const [actionsHistory, setActionsHistory] = useState([]);
+
 	function message(type, text) {
+
+		setActionsHistory(oldArray => [...oldArray, new Date().toLocaleString().replace(',','') + " : " +text]);
+
 		return (
 			<Notification type={type} header={type} closable duration={7500}>
 			<p>{text}</p>
@@ -403,6 +408,7 @@ export default function CategoryPage() {
 
 	useEffect(() => {
 
+		setActionsHistory([]);
 		setLimit(100);
 		setPage(1);
 		setFilterText(null);
@@ -418,6 +424,7 @@ export default function CategoryPage() {
 		toaster.push(message("info", "fetching table data"), {
 			placement: 'bottomEnd'
 		});
+
 	}, [id]);
 
 	function renameList() {
@@ -498,9 +505,9 @@ export default function CategoryPage() {
 
 		var _dd = data.map(function(item) {
 			return {
-				"email": item.email,
-				"first": item.first_name,
-				"last": item.last_name
+				"Email": item.email,
+				"First": item.first_name,
+				"Last": item.last_name
 			}
 		})
 
@@ -1091,6 +1098,16 @@ export default function CategoryPage() {
 								</Dropdown.Menu>
 								<Dropdown.Item divider />
 								<Dropdown.Item onSelect={deleteList} style={{ color: 'red' }}>Delete</Dropdown.Item>
+							</Dropdown>
+
+							<Dropdown title={"Actions (" + actionsHistory.length +")" } style={{ marginLeft: '5px' }}>
+								<Dropdown.Item disabled>
+									<Timeline>
+										{actionsHistory?.map(item => 
+											<Timeline.Item>{item}</Timeline.Item>
+										)}
+									</Timeline>
+								</Dropdown.Item>
 							</Dropdown>
 
 							{checkedKeys.length > 0 ?
