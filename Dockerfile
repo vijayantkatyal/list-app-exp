@@ -1,12 +1,34 @@
-FROM node:14.17.0
+# Stage 1: Build Stage
+FROM node:14.17.0 AS build
 
-ENV PATH $PATH:node_modules/.bin
+# Install required dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3 \
+    python3-dev \
+    curl \
+    wine
 
-RUN npm cache verify
-# RUN npm install install babel-cli@6 babel -preset-react-app@3
+# Install specific version of node-gyp globally
+RUN npm install -g node-gyp
 
-# RUN apt-get clean && \
-#     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-#     npm cache verify
+# Set environment variables for node-gyp and electron
+ENV npm_config_build_v8_with_gn=false \
+    npm_config_runtime=electron \
+    npm_config_target="11.5.0"
 
+# Install project dependencies and build
+WORKDIR /app
+COPY . .
+RUN npm install --build-from-source
+RUN npm run build
+
+# Stage 2: Final Image
+FROM electronuserland/builder:wine
+
+# Copy built files from the build stage
+# COPY --from=build /app /app
+
+# Default command
+# CMD ["npm", "start"]
 EXPOSE 19000

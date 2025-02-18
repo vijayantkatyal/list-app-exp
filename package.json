@@ -31,7 +31,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-	"dist": "npm run build && electron-builder -c.extraMetadata.main=build/electron.js",
+    "dist": "npm run build && electron-builder -c.extraMetadata.main=build/electron.js",
     "dist:win": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js",
     "dist:mac": "npm run build && electron-builder -m -c.extraMetadata.main=build/electron.js",
     "dist:linux": "npm run build && electron-builder -l -c.extraMetadata.main=build/electron.js",
@@ -39,7 +39,7 @@
     "db": "node db.js",
     "electron": "concurrently -k \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron . --no-sandbox --enable-logging\"",
     "rebuild": "electron-rebuild",
-	"release": "electron-builder --publish always -c.extraMetadata.main=build/electron.js"
+    "release": "electron-builder --publish always -c.extraMetadata.main=build/electron.js"
   },
   "eslintConfig": {
     "extends": [
@@ -72,17 +72,17 @@
   "main": "./public/electron.js",
   "build": {
     "appId": "com.electron.my_app",
-	"extends": null,
-	"extraMetadata": {
-		"main": "build/electron.js"
-	},
-	"asarUnpack": "**\\*.{node,dll}",
+    "extends": null,
+    "extraMetadata": {
+      "main": "build/electron.js"
+    },
+    "asarUnpack": "**\\*.{node,dll}",
     "productName": "My App",
     "files": [
-	  "dist/**/*",
+      "dist/**/*",
       "build/**/*",
       "node_modules/**/*",
-	  "package.json"
+      "package.json"
     ],
     "directories": {
       "buildResources": "public"
@@ -92,22 +92,22 @@
       "category": "utilities",
       "type": "development"
     },
-	"dmg": {
-		"contents": [
-			{
-			"x": 110,
-			"y": 150
-			},
-			{
-			"x": 440,
-			"y": 150,
-			"type": "link",
-			"path": "/Applications"
-			}
-		],
-		"artifactName": "electron-circleci-${version}.${ext}",
-		"publish": null
-	},
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 440,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "artifactName": "electron-circleci-${version}.${ext}",
+      "publish": null
+    },
     "win": {
       "target": "nsis",
       "icon": "./public/logo512.png"
@@ -116,11 +116,11 @@
       "target": "AppImage",
       "category": "Development"
     },
-	"publish": [
-		{
-		  "provider": "github",
-		  "releaseType": "release"
-		}
-	]
+    "publish": [
+      {
+        "provider": "github",
+        "releaseType": "release"
+      }
+    ]
   }
 }

@@ -10,7 +10,7 @@ services:
       - "./:/app"
       - "/tmp/.X11-unix:/tmp/.X11-unix"
     working_dir: /app
-    command: "npm start"
+    command: "npm run dist:win"
     environment:
       - DISPLAY=unix$DISPLAY
     ports:
