@@ -1,8 +1,8 @@
 version: 2
 jobs:
-  build_windows:
-    docker:
-      - image: electronuserland/builder:wine
+  build_macos:
+    macos:
+      xcode: "12.5.1"
     steps:
       - checkout
       - run: sudo npm install -g npm
@@ -10,7 +10,7 @@ jobs:
       - run: npm install --no-package-lock
       - run: npm run build
       - run: npm run rebuild
-      - run: npm run dist:win
+      - run: npm run dist:mac
 
       - store_artifacts:
           path: /Users/distiller/.npm/_logs/
@@ -22,4 +22,4 @@ workflows:
   version: 2
   build:
     jobs:
-      - build_windows
+      - build_macos
