@@ -5,7 +5,7 @@ jobs:
       - image: electronuserland/builder:wine
     steps:
       - checkout
-      - run: sudo npm install -g npm
+      - run: npm install -g npm
       - run: npm cache clean --force
       - run: npm install --no-package-lock
       - run: npm run build
