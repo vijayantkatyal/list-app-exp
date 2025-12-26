@@ -100,3 +100,8 @@
 [Done] new button to null data, email typos, flat, duplicate
 [Done] merge, subtract -> trigger new button
 [Done] trigger master button on import
+
+---------------------------------
+
+> Email cleaning using ai
+> UI Changes
